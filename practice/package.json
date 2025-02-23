@@ -1,0 +1,26 @@
+{
+  "name": "langchain",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google/generative-ai": "^0.22.0",
+    "@langchain/community": "^0.3.32",
+    "@langchain/core": "^0.3.40",
+    "@langchain/google-genai": "^0.1.8",
+    "@upstash/vector": "^1.2.0",
+    "dompurify": "^3.2.4",
+    "dotenv": "^16.4.7",
+    "isomorphic-dompurify": "^2.22.0",
+    "langchain": "^0.3.19",
+    "marked": "^15.0.7",
+    "pdf-parse": "^1.1.1"
+  }
+}

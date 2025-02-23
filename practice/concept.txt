@@ -1,0 +1,34 @@
+issue - DOMPurify works only on client-side
+sol - use isomorphic-domPurify 
+
+
+
+// prompt
+    chatprompttamplate
+    messagePlaceholder
+
+// message type
+    new SystemMessage("you're a good assistant"),   //system
+    new HumanMessage("hi! I'm bob"),                //user
+    new AIMessage("hi!"),                           //assistant
+    new ToolMessage("I'm a tool"),                  //tool
+
+// template
+    .fromTemplate
+    .fromMessage
+
+// RAG - DocLoader 
+    -pageContent: a string representing the content;
+    -metadata: records of arbitrary metadata;
+    -id: (optional) a string identifier for the document.
+
+//RAG - splitDocument
+    -REcursive
+    -Pdfloader
+    -unstructure loader
+    -CharacterTextSplitter
+
+//embedding
+    -.embedQuery : used to embed one text (document[0].pageContent)
+    -.embedDocument : used to embed more then one text docs
+
