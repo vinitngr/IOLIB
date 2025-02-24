@@ -1,6 +1,6 @@
 import { vectorStore , textSplitter , loader } from "./central.js";
 
-const contents = await loader.load();  //get documents text
+const contents = await loader.load(); 
 
 const processedDocs = contents.map(doc => ({
   ...doc,

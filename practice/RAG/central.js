@@ -9,13 +9,13 @@ config()
 
 //splitter
 export const textSplitter = new RecursiveCharacterTextSplitter({
-  // separators: ["16th at 1500"], //add curstom separators
   chunkSize: 700,
   chunkOverlap: 170,
+  // separators: [". "], 
 });
 
-//loader
-export const loader = new PDFLoader("./public/drylab.pdf", {
+//loader 
+export const loader = new PDFLoader("./practice/public/test.pdf", {
   splitPages: false
 });
 

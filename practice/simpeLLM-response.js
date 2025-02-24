@@ -9,7 +9,6 @@ const llm = new ChatGoogleGenerativeAI({
     model : "gemini-2.0-flash",
     temperature: 0,
     maxOutputTokens: 300,
-    baseUrl: "https://api.genai.ai/v1",
 });
 
 process.stdout.write("ASK QUESTION --> ");
@@ -20,5 +19,6 @@ process.stdin.on('data', async (data) => {
     }
     const result = await llm.invoke(text);
     console.log(DOMPurify.sanitize(marked(result.content)));
+    // console.log(result);
     process.stdout.write("ASK QUESTION --> ");
 });
