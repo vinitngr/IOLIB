@@ -1,0 +1,17 @@
+POST http://localhost:3000/ask
+Content-Type: application/json
+
+{
+    "text": "Hello"
+}
+
+### 
+# GET http://localhost:3000/who is the prime of india
+# Content-Type: application/json
+# Accept : application/json
+
+
+
+###
+GET http://localhost:3000/who is the prime minister of india
+Content-Type: application/json
