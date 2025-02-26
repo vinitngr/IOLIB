@@ -1,6 +1,6 @@
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { TaskType } from "@google/generative-ai";
 import { config } from "dotenv";
 import {Index} from "@upstash/vector";
@@ -15,7 +15,7 @@ export const textSplitter = new RecursiveCharacterTextSplitter({
 });
 
 //loader 
-export const loader = new PDFLoader("./practice/public/test.pdf", {
+export const loader = new PDFLoader("./practice-js/public/test.pdf", {
   splitPages: false
 });
 
@@ -25,6 +25,14 @@ export const embeddings = new GoogleGenerativeAIEmbeddings({
   taskType: TaskType.RETRIEVAL_DOCUMENT,
   title: "Document title",
 });
+
+
+export const llm = new ChatGoogleGenerativeAI({
+  model : "gemini-2.0-flash",
+  temperature: 0,
+  maxOutputTokens: 300,
+});
+
 
 //vector Store
 export const indexWithCredentials = new Index({
@@ -36,3 +44,5 @@ export const indexWithCredentials = new Index({
 export const vectorStore = new UpstashVectorStore(embeddings, {
   index: indexWithCredentials,
 });
+
+

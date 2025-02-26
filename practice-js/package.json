@@ -17,6 +17,7 @@
     "@langchain/google-genai": "^0.1.8",
     "@langchain/langgraph": "^0.2.48",
     "@upstash/vector": "^1.2.0",
+    "cheerio": "^1.0.0",
     "dompurify": "^3.2.4",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

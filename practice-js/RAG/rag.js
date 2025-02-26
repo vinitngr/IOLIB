@@ -1,5 +1,4 @@
 import { vectorStore , textSplitter , loader } from "./central.js";
-
 const contents = await loader.load(); 
 
 const processedDocs = contents.map(doc => ({
@@ -18,6 +17,7 @@ const documentsWithBatch = allSplits.map((doc, index) => ({
   ...doc,
   metadata: { ...doc.metadata, batchID: timestamp },
 }));
+
 
 console.log('vector store started'); 
 const ids = allSplits.map(( _ ,index) => `doc-${timestamp}-${index}`);
