@@ -30,7 +30,7 @@ app.get('/:say', async (req, res) => {
     const text = req.params.say.trim();
     const result = await llm.stream(text);
 
-    res.setHeader('Content-Type', 'text/markdown');
+    res.setHeader('Content-Type', 'text/event-stream');
     for await ( const chunk of result ){
         res.write(chunk.content)
     }
