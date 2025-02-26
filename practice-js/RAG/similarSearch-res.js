@@ -1,16 +1,24 @@
-import { vectorStore , llm } from "./central.js";
+import { vectorStore, llm } from "./central.js";
+
+const query = "What strategies can be used to minimize privacy loss when making multiple queries?";
 
 const filter = "batchID = 1740589197826";
-const s = await vectorStore.similaritySearchWithScore("Artificial Intelligence When Optimal is the Enemy of Good: High-Budget Differential Privacy for Medical AI Can we guarantee patient privacy without sacrificing model accuracy",2, filter);
 
+const s = await vectorStore.similaritySearchWithScore(query,2, filter);
 
-const finaldata =  s.map( d=> d[0].pageContent).join('\n\n');
-console.log('final data',finaldata);
+const finaldata = s.map(d => d[0].pageContent).join('\n\n');
 
 
 llm.invoke([
-    { role: "system", content: "You are a helpful assistant. Provide responses strictly based on the provided text. Do NOT assume or infer any information that is not explicitly stated , I am providing you The RAG retrived data so you have to take its reference for answer the things" },
-    { role: "user", content: finaldata + "Artificial Intelligence When Optimal is the Enemy of Good: High-Budget Differential Privacy for Medical AI Can we guarantee patient privacy without sacrificing model accuracy." }
+    {
+        "role": "system",
+        "content": "You are a helpful assistant,. Provide responses based on the provided RAG data and use your knowledge when RAG is irrelevant. Ensure the answer is clear, well-structured, and directly to the point. Avoid unnecessary text unless the user requests details. Format responses properly without escape characters like '\\n'."
+    }
+    ,      
+      
+    { role: "user", content: finaldata + "\n\n" + query }
 ]).then((result) => {
-    console.log(result);
+    console.log({ answer : result.content , 
+        score : result.usage_metadata.total_tokens
+    });
 });
