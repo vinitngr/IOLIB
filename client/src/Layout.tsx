@@ -1,9 +1,17 @@
-import { Outlet } from 'react-router-dom'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 function Layout() {
+
+  const navigate = useNavigate()
   return (
-    <div>
-      <h1>Layout</h1>
+    <div className='max-h-screen h-screen  p-4 bg-gray-100 flex justify-center'>
+      <div 
+      onClick={()=>navigate(-1)}
+      className='absolute top-0 left-0 m-2'><ArrowLeft/></div>
+      <div 
+      onClick={()=>navigate(1)}
+      className='absolute top-0 left-5 m-2'><ArrowRight/></div>
       <Outlet/>
     </div>
   )
