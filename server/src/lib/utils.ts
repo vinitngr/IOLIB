@@ -8,7 +8,7 @@ export const generateToken = ( userId: mongoose.Schema.Types.ObjectId , res : an
         expiresIn: "7d",
       });
       
-      res.cookie("cookie", token, {
+      res.cookie("langchain", token, {
         maxAge: 7 * 24 * 60 * 60 * 1000, 
         httpOnly: true, 
         sameSite: "strict", 
