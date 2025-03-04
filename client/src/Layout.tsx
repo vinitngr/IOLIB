@@ -5,7 +5,7 @@ function Layout() {
 
   const navigate = useNavigate()
   return (
-    <div className='max-h-screen h-screen  p-4 bg-gray-100 flex justify-center'>
+    <div className='max-h-screen h-screen bg-gray-100 flex justify-center'>
       <div 
       onClick={()=>navigate(-1)}
       className='absolute top-0 left-0 m-2'><ArrowLeft/></div>
