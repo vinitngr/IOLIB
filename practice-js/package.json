@@ -15,7 +15,7 @@
     "@langchain/community": "^0.3.32",
     "@langchain/core": "^0.3.40",
     "@langchain/google-genai": "^0.1.8",
-    "@langchain/langgraph": "^0.2.48",
+    "@langchain/langgraph": "^0.2.52",
     "@upstash/vector": "^1.2.0",
     "cheerio": "^1.0.0",
     "dompurify": "^3.2.4",

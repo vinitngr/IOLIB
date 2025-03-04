@@ -87,7 +87,7 @@ const AiChat = () => {
      
       
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-2 space-y-6 max-w-3xl mx-auto w-[700px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+      <div className="flex-1 overflow-y-auto sexyscroll px-4 pb-4 pt-2 space-y-6 max-w-3xl mx-auto w-[700px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
         {messages.map((message) => (
           <div 
             key={message.id} 

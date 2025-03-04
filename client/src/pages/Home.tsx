@@ -1,7 +1,7 @@
 
 function Home() {
   return (
-    <div>Home</div>
+    <div className="mono2">Home</div>
   )
 }
 

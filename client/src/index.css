@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
@@ -113,7 +112,11 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
-
+@layer utilities {
+  .mono{
+    background-color: red
+  }
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -131,3 +134,21 @@
 * {
   font-family: 'Roboto Mono', monospace !important;
 }
+
+.noscroll::-webkit-scrollbar {
+  display: none;
+}
+
+.thinscroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sexyscroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sexyscroll::-webkit-scrollbar-thumb {
+  background-color: rgb(199, 199, 199);
+  border-radius: 10px;
+}
+
