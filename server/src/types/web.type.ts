@@ -1,7 +1,7 @@
 export interface WebData{
     type: 'web';
-    webURL: string;
-    aboutWeb: {
+    webURL?: string;
+    aboutWeb?: {
         webName: string;
         webDescription: string;
         author: string;
@@ -13,19 +13,47 @@ export interface WebData{
         tokenPR: number;
         strict: boolean;
     };
-    WebId: string;
+    docsId: string;
     createAt: string;
 };
 
+export interface DocsData {
+    type: 'pdf' | 'web';  
+    docsId: string; 
+    createdAt: string; 
 
-export interface RAGconfig {
-    type: 'web';
-    webURL: string;
-    webId : string ;
-    RAG?: {  // Made optional
+    aboutPdf?: {       
+        author?: string;
+        category?: string;
+        language?: string;
+        description?: string;
+    };
+
+    aboutWeb?: {         
+        webURL: string;
+        title?: string;
+        language?: string;
+        description? : string,
+        category?: string
+    };
+
+    RAG?: {  
         retrival?: number;
         tokenPR?: number;
-        chunkOverLap? : number
+        chunkOverlap? : number;
+        strict?: boolean;
+    };
+}
+
+
+export interface RAGconfig {
+    type: 'web' | 'pdf';
+    webURL?: string;
+    docsId : string ;
+    RAG?: {
+        retrival?: number;
+        tokenPR?: number;
+        chunkOverlap? : number
     };
 }
 

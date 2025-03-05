@@ -3,7 +3,7 @@ import cors from 'cors'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import path from 'node:path';
-
+import connectDB from './configs/db';
 const app = express()
 
 //cors and evn accesibililty 
@@ -13,7 +13,7 @@ app.use(cors())
 //accesibility 
 app.use(express.json())
 app.use(cookieParser())
-
+app.use(express.urlencoded({ extended: true }));
 //production setup 
 if(process.env.ENV == 'production'){
     const clientpath = path.resolve( __dirname ,'../../client/dist')
@@ -41,4 +41,5 @@ app.get('/test' , (req, res)=>{
 const port: number = Number(process.env.PORT) || 3000;
 app.listen(port  , "0.0.0.0" , ()=>{
     console.log(`✅ Server running at: http://localhost:${port}`);
+    connectDB()
 })

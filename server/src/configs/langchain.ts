@@ -13,7 +13,7 @@ config();
 export const llm = (model = DEFAULT_MODEL, temperature = DEFAULT_TEMP, maxOutputTokens = DEFAULT_OUTPUT_TOKEN) =>
     new ChatGoogleGenerativeAI({ model, temperature, maxOutputTokens });
 
-export const createTextSplitter = (chunkSize = DEFAULT_CHUNK_SIZE, chunkOverlap = DEFAULT_CHUNK_OVERLAP) =>
+export const createTextSplitter = (chunkSize : number , chunkOverlap : number) =>
     new RecursiveCharacterTextSplitter({ chunkSize, chunkOverlap });
 
 export const createLoader = (filePath: string, splitPages = false) =>
