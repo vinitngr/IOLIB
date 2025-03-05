@@ -11,11 +11,20 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google/generative-ai": "^0.23.0",
+    "@langchain/community": "^0.3.34",
+    "@langchain/core": "^0.3.42",
+    "@langchain/google-genai": "^0.1.10",
+    "@langchain/langgraph": "^0.2.53",
+    "@tavily/core": "^0.3.1",
+    "@upstash/vector": "^1.2.0",
+    "cheerio": "^1.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "langchain": "^0.3.19",
     "mongoose": "^8.11.0"
   },
   "devDependencies": {

@@ -27,6 +27,8 @@ if(process.env.ENV == 'production'){
 //auth router 
 import authRoute from './routes/auth.route';
 app.use('/api/auth' , authRoute)
+import addRoute from './routes/add.route';
+app.use('/api/add' , addRoute)
 //xyz router here
 
 
