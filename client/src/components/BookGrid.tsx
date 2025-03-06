@@ -9,6 +9,7 @@ interface Book {
   author: string;
   image: string;
   details: string;
+  category: string;
 }
 
 export default function BookGrid({ books }: { books: Book[] }) {
@@ -26,6 +27,7 @@ export default function BookGrid({ books }: { books: Book[] }) {
             author={book.author}
             image={book.image}
             details={book.details}
+            category={book.category}
           />
         ))}
       </div>
