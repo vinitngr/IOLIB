@@ -11,6 +11,9 @@ interface BookControlsProps {
     filterCategory: string;
     setFilterCategory: (value: string) => void;
     categories : string[];
+    filterLanguage: string;
+    setFilterLanguage: (value: string) => void;
+    languages : string[];
   }
   
   export default function BookControls({
@@ -24,6 +27,9 @@ interface BookControlsProps {
     filterCategory,
     setFilterCategory,
     categories,
+    filterLanguage,
+    setFilterLanguage,
+    languages,
   }: BookControlsProps) {
     return (
       <div className="flex min-w-full justify-end min-h-30 items-center gap-30 bg-white/90 p-4 shadow-xl">
@@ -59,6 +65,18 @@ interface BookControlsProps {
           {categories.map((category, index) => (
             <option key={index} value={category}>{category}</option>
           ))}
+        </select>
+
+        {/* Filter by Author */}
+        <select
+            value={filterLanguage}
+            onChange={(e) => setFilterLanguage(e.target.value)}
+            className="px-4 py-2 underline underline-offset-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+            <option value="">Language</option>
+            {languages.map((language, index) => (
+                <option key={index} value={language}>{language}</option>
+            ))}
         </select>
   
         {/* Sort */}
