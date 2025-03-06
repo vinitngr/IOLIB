@@ -3,7 +3,9 @@ import { DocsData } from '../types/web.type';
 
 const { Schema } = mongoose;
 
-export interface IDocsData extends DocsData {}
+export interface IDocsData extends DocsData {
+    summary: string;
+}
 
 const DocsSchema = new Schema<IDocsData>({
     type: { type: String, required: true, enum: ['pdf', 'web'] },
@@ -18,7 +20,7 @@ const DocsSchema = new Schema<IDocsData>({
     aboutWeb: {
         webURL: String,
         title: String,
-        category: String ,
+        category: String,
         language: String,
         description: String,
     },
@@ -28,7 +30,9 @@ const DocsSchema = new Schema<IDocsData>({
         chunkOverlap: Number,
         strict: Boolean,
     },
+    summary: { type: String },
 });
+
 
 const DocsModel = mongoose.model('DocsData', DocsSchema);
 

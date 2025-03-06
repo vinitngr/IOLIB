@@ -4,3 +4,4 @@ export const processContentFXN = (content : string) => {
         .replace(/[^\w\s.,!?'-]/g, '') 
         .trim(); 
 }
+

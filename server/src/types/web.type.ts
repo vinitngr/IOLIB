@@ -43,6 +43,7 @@ export interface DocsData {
         chunkOverlap? : number;
         strict?: boolean;
     };
+    summary?: string
 }
 
 
