@@ -10,6 +10,7 @@ interface Book {
   image: string;
   details: string;
   category: string;
+  language : string;
 }
 
 export default function BookGrid({ books }: { books: Book[] }) {
@@ -28,6 +29,7 @@ export default function BookGrid({ books }: { books: Book[] }) {
             image={book.image}
             details={book.details}
             category={book.category}
+            language={book.language}
           />
         ))}
       </div>
