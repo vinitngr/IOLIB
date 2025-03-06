@@ -6,9 +6,10 @@ interface BookCardProps {
   author: string;
   image: string;
   details : string;
+  category : string;
 }
 
-export default function BookCard({ title, author, image , details="Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iusto cumque quaerat! Eius delectus sint iste hic, minus alias veniam velit adipisci eum dolores consequatur necessitatibus optio voluptatum consequuntur doloremque?" }: BookCardProps) {
+export default function BookCard({ title, author, image , details="Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium iusto cumque quaerat! Eius delectus sint iste hic, minus alias veniam velit adipisci eum dolores consequatur necessitatibus optio voluptatum consequuntur doloremque?", category }: BookCardProps) {
   return (
     <div className="bg-white rounded-xl shadow-md p-0 grid grid-cols-3 gap-2 h-60">
 

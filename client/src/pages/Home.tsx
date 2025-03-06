@@ -15,8 +15,10 @@ function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("title");
   const [filterAuthor, setFilterAuthor] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
 
   const authors = Array.from(new Set(booksData.map((book) => book.author)));
+  const categories = Array.from(new Set(booksData.map((book) => book.category)));
 
   const filteredBooks = booksData
     .filter(
@@ -26,6 +28,9 @@ function Home() {
     )
     .filter((book) =>
       filterAuthor ? book.author === filterAuthor : true
+    )
+    .filter((book) =>
+      filterCategory ? book.category === filterCategory : true
     )
     .sort((a, b) => {
       if (sortOption === "title") return a.title.localeCompare(b.title);
@@ -53,6 +58,9 @@ function Home() {
           filterAuthor={filterAuthor}
           setFilterAuthor={setFilterAuthor}
           authors={authors}
+          filterCategory={filterCategory}
+          setFilterCategory={setFilterCategory}
+          categories={categories}
         />
       </div>
 
