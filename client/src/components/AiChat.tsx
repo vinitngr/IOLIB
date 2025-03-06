@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef} from "react";
-import { AiOutlineHome, AiOutlineSun, AiOutlineMoon } from "react-icons/ai";
+import { AiOutlineHome, AiOutlineSun, AiOutlineMoon, } from "react-icons/ai";
+import { IoIosSend } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 // Define the Message interface
@@ -148,8 +149,8 @@ setMessages((prev: Message[]) => [...prev, aiResponse]);
             value={input} 
             onChange={(e) => setInput(e.target.value)}
           />
-          <button onClick={sendMessage} className="bg-purple-500 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
-            Send
+          <button onClick={sendMessage} className="bg-purple-500 hover:bg-purple-700 text-white px-6 py-4 rounded-lg ">
+          <IoIosSend className="text-2xl" />
           </button>
         </div>
       </div>
