@@ -1,7 +1,8 @@
 import {  RAGworker, saveToMONGO, StoreRAG } from "../service/add.service";
 import { Request, Response } from "express";
 import pdfParse from "pdf-parse";
-import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RETRIVAL } from "../configs/Constant";
+import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RANGE, DEFAULT_RETRIVAL } from "../configs/Constant";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 
 
 
@@ -74,8 +75,8 @@ export const addwebController = async (req: any, res: any) => {
 
 export const addPdfController = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { author, category, language, description, strict, rag } = req.body
-        console.log( author , category , language , description , strict , rag);
+        const { author, category, language, description, rag  } = req.body
+        console.log( author , category , language , description , rag);
         const pdfFile = req.file;
 
         if (!pdfFile) {
@@ -90,7 +91,9 @@ export const addPdfController = async (req: Request, res: Response): Promise<voi
         if (typeof parsedRag === "string") {
             parsedRag = JSON.parse(parsedRag);
         }
-
+        parsedRag.range = parsedRag.range ?? DEFAULT_RANGE; 
+        
+        //save to mongo
         await saveToMONGO({
             type: 'pdf',
             docsId: randomUUID,
@@ -103,14 +106,24 @@ export const addPdfController = async (req: Request, res: Response): Promise<voi
             },
             ...(parsedRag && { RAG: parsedRag })
         });
-        
+        //pdf handler
         const pdfBuffer = pdfFile.buffer;
-        const pdfData = await pdfParse(pdfBuffer);
+        const pdfBlob = new Blob([pdfBuffer], { type: req.file.mimetype });
+        const loader = new PDFLoader(pdfBlob);
 
+        const contents = await loader.load(); 
+        const [start, end] = parsedRag.range.split("-").map((v) => (v === "end" ? Infinity : parseInt(v)));
+        const filteredDocs = contents.filter((doc, index) => {
+            const pageNumber = index + 1;
+            return pageNumber >= start && pageNumber <= end;
+        });
+        const plainText = filteredDocs.map(doc => doc.pageContent).join("\n");
+        
+        //store to RAG
         StoreRAG({
             type :'pdf',
             docsId : randomUUID ,
-            content : pdfData.text ,
+            content : plainText ,
             ...(parsedRag && { RAG: parsedRag })
         })
         res.status(200).json({ 

@@ -20,6 +20,7 @@ export const saveToMONGO = async (data: DocsData ) => {
         await newDocs.save()
         console.log('saved to mongp');
         // TODO: Implement actual MongoDB insertion logic here
+        return newDocs
     } catch (error) {
         throw new Error(`Failed storing data in MongoDB: ${error.message}`);
     };
@@ -56,4 +57,8 @@ export const StoreRAG = async (data: RAGconfig & { content : string }) => {
     //TODO open vector after 
     // await vectorStore.addDocuments(documentsWithBatch, { ids });
     console.log('stored to vector storage');
+}
+
+export const pdfStored = async (data : RAGconfig & {content : string }) => {
+    
 }
