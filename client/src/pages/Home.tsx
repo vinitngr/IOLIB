@@ -11,7 +11,6 @@ function Home() {
   // const [bgColor, setBgColor] = useState("white");
 
 
-  const books = booksData;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("title");
