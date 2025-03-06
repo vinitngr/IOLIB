@@ -13,7 +13,7 @@ export const Crawling = async (URL : string)  =>{
     }
 }
 
-export const saveToMONGO = async (data: DocsData ) => {
+export const saveToMONGO = async (data: DocsData) => {
     try {
         const newDocs = new DocsModel(data)
         console.log('saving to mongo');
@@ -55,7 +55,7 @@ export const StoreRAG = async (data: RAGconfig & { content : string }) => {
     console.log(documentsWithBatch);
     console.log('vector storage initialized');
     //TODO open vector after 
-    // await vectorStore.addDocuments(documentsWithBatch, { ids });
+    await vectorStore.addDocuments(documentsWithBatch, { ids });
     console.log('stored to vector storage');
 }
 

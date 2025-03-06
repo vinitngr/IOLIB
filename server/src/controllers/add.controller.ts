@@ -1,8 +1,8 @@
 import {  RAGworker, saveToMONGO, StoreRAG } from "../service/add.service";
 import { Request, Response } from "express";
-import pdfParse from "pdf-parse";
-import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RANGE, DEFAULT_RETRIVAL } from "../configs/Constant";
+import {  DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RANGE, DEFAULT_RETRIVAL } from "../configs/Constant";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { summarizer } from "../utils/global";
 
 
 
@@ -24,6 +24,12 @@ export const addwebController = async (req: any, res: any) => {
         const randomUUID: string = crypto.randomUUID();
         const time: string = new Date().toISOString();
 
+        console.log('asked for summary');
+        const summaryResult = await summarizer(addData.webURL , addData.RAG?.strict);
+        const summary = typeof summaryResult === "string" ? summaryResult : JSON.stringify(summaryResult);
+        console.log('summary generated');
+
+        console.log('mongo storing started');
         await saveToMONGO({
             type: 'web',
             docsId: randomUUID,
@@ -40,18 +46,24 @@ export const addwebController = async (req: any, res: any) => {
                 tokenPR: addData.RAG.tokenPR || DEFAULT_CHUNK_SIZE,
                 chunkOverlap: addData.RAG.chunkOverlap || DEFAULT_CHUNK_OVERLAP,
                 strict: addData.RAG.strict || false
-            } : undefined
+            } : undefined,
+            summary 
         });
+        console.log('mongo Storing finished');
         
-
+        
+        
+        console.log('Rag process started');
         await RAGworker({
             type: 'web',
             webURL: addData.webURL,
             docsId : randomUUID ,
             ...(addData.RAG && { RAG: addData.RAG })
         });
+        console.log('Rag process finished');
         
-
+        
+        console.log('Response sended');
         res.status(200).json({
             message : 'Web processed successfully',
             type: 'web',
