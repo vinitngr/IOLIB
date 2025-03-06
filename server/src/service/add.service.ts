@@ -57,3 +57,7 @@ export const StoreRAG = async (data: RAGconfig & { content : string }) => {
     // await vectorStore.addDocuments(documentsWithBatch, { ids });
     console.log('stored to vector storage');
 }
+
+export const pdfStored = async (data : RAGconfig & {content : string }) => {
+    
+}

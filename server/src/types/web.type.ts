@@ -51,6 +51,7 @@ export interface RAGconfig {
     webURL?: string;
     docsId : string ;
     RAG?: {
+        select?:string;
         retrival?: number;
         tokenPR?: number;
         chunkOverlap? : number
