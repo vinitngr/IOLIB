@@ -1,7 +1,8 @@
 import {  RAGworker, saveToMONGO, StoreRAG } from "../service/add.service";
 import { Request, Response } from "express";
-import pdfParse from "pdf-parse";
-import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RETRIVAL } from "../configs/Constant";
+import {  DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RANGE, DEFAULT_RETRIVAL } from "../configs/Constant";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { summarizer } from "../utils/global";
 
 
 
@@ -23,6 +24,12 @@ export const addwebController = async (req: any, res: any) => {
         const randomUUID: string = crypto.randomUUID();
         const time: string = new Date().toISOString();
 
+        console.log('asked for summary');
+        const summaryResult = await summarizer(addData.webURL , addData.RAG?.strict);
+        const summary = typeof summaryResult === "string" ? summaryResult : JSON.stringify(summaryResult);
+        console.log('summary generated');
+
+        console.log('mongo storing started');
         await saveToMONGO({
             type: 'web',
             docsId: randomUUID,
@@ -39,18 +46,24 @@ export const addwebController = async (req: any, res: any) => {
                 tokenPR: addData.RAG.tokenPR || DEFAULT_CHUNK_SIZE,
                 chunkOverlap: addData.RAG.chunkOverlap || DEFAULT_CHUNK_OVERLAP,
                 strict: addData.RAG.strict || false
-            } : undefined
+            } : undefined,
+            summary 
         });
+        console.log('mongo Storing finished');
         
-
+        
+        
+        console.log('Rag process started');
         await RAGworker({
             type: 'web',
             webURL: addData.webURL,
             docsId : randomUUID ,
             ...(addData.RAG && { RAG: addData.RAG })
         });
+        console.log('Rag process finished');
         
-
+        
+        console.log('Response sended');
         res.status(200).json({
             message : 'Web processed successfully',
             type: 'web',
@@ -74,8 +87,8 @@ export const addwebController = async (req: any, res: any) => {
 
 export const addPdfController = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { author, category, language, description, strict, rag } = req.body
-        console.log( author , category , language , description , strict , rag);
+        const { author, category, language, description, rag  } = req.body
+        console.log( author , category , language , description , rag);
         const pdfFile = req.file;
 
         if (!pdfFile) {
@@ -90,7 +103,9 @@ export const addPdfController = async (req: Request, res: Response): Promise<voi
         if (typeof parsedRag === "string") {
             parsedRag = JSON.parse(parsedRag);
         }
-
+        parsedRag.range = parsedRag.range ?? DEFAULT_RANGE; 
+        
+        //save to mongo
         await saveToMONGO({
             type: 'pdf',
             docsId: randomUUID,
@@ -103,14 +118,24 @@ export const addPdfController = async (req: Request, res: Response): Promise<voi
             },
             ...(parsedRag && { RAG: parsedRag })
         });
-        
+        //pdf handler
         const pdfBuffer = pdfFile.buffer;
-        const pdfData = await pdfParse(pdfBuffer);
+        const pdfBlob = new Blob([pdfBuffer], { type: req.file.mimetype });
+        const loader = new PDFLoader(pdfBlob);
 
+        const contents = await loader.load(); 
+        const [start, end] = parsedRag.range.split("-").map((v) => (v === "end" ? Infinity : parseInt(v)));
+        const filteredDocs = contents.filter((doc, index) => {
+            const pageNumber = index + 1;
+            return pageNumber >= start && pageNumber <= end;
+        });
+        const plainText = filteredDocs.map(doc => doc.pageContent).join("\n");
+        
+        //store to RAG
         StoreRAG({
             type :'pdf',
             docsId : randomUUID ,
-            content : pdfData.text ,
+            content : plainText ,
             ...(parsedRag && { RAG: parsedRag })
         })
         res.status(200).json({ 

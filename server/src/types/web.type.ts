@@ -43,6 +43,7 @@ export interface DocsData {
         chunkOverlap? : number;
         strict?: boolean;
     };
+    summary?: string
 }
 
 
@@ -51,6 +52,7 @@ export interface RAGconfig {
     webURL?: string;
     docsId : string ;
     RAG?: {
+        select?:string;
         retrival?: number;
         tokenPR?: number;
         chunkOverlap? : number

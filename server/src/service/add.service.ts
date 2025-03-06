@@ -13,13 +13,14 @@ export const Crawling = async (URL : string)  =>{
     }
 }
 
-export const saveToMONGO = async (data: DocsData ) => {
+export const saveToMONGO = async (data: DocsData) => {
     try {
         const newDocs = new DocsModel(data)
         console.log('saving to mongo');
         await newDocs.save()
         console.log('saved to mongp');
         // TODO: Implement actual MongoDB insertion logic here
+        return newDocs
     } catch (error) {
         throw new Error(`Failed storing data in MongoDB: ${error.message}`);
     };
@@ -54,6 +55,10 @@ export const StoreRAG = async (data: RAGconfig & { content : string }) => {
     console.log(documentsWithBatch);
     console.log('vector storage initialized');
     //TODO open vector after 
-    // await vectorStore.addDocuments(documentsWithBatch, { ids });
+    await vectorStore.addDocuments(documentsWithBatch, { ids });
     console.log('stored to vector storage');
+}
+
+export const pdfStored = async (data : RAGconfig & {content : string }) => {
+    
 }

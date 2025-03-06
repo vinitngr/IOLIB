@@ -10,7 +10,7 @@ import { Embeddings } from "@langchain/core/embeddings";
 
 config();
 
-export const llm = (model = DEFAULT_MODEL, temperature = DEFAULT_TEMP, maxOutputTokens = DEFAULT_OUTPUT_TOKEN) =>
+export const createllm = (model = DEFAULT_MODEL, temperature = DEFAULT_TEMP, maxOutputTokens = DEFAULT_OUTPUT_TOKEN) =>
     new ChatGoogleGenerativeAI({ model, temperature, maxOutputTokens });
 
 export const createTextSplitter = (chunkSize : number , chunkOverlap : number) =>
