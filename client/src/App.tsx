@@ -5,6 +5,7 @@ import Form from "./pages/Form";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Chat from "./pages/Chat";
+import TestPage from "./components/ui/testPage.tsx"
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path='home' element={<Home/>} />
         <Route path='form' element={<Form/>} />
         <Route path='chat' element={<Chat/>} />
+        <Route path='testpage' element={<TestPage/>} />
       </Route> 
         <Route path='/login' element={<Login/>} />
         <Route path='/register' element={<Register/>} />

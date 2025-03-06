@@ -8,7 +8,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="w-full bg-transparent shadow-md px-6 py-3 sticky top-0 z-50">
+    <aside className="w-full bg-transparent shadow-md px-6 py-3 sticky top-0 z-50">
       <div className="max-w-full mx-auto flex justify-around items-center">
         {/* Logo */}
         <Link to="/" className="hidden md:flex text-xl pl-20 md:pr-100 font-bold text-slate-900 font-stretch-200">
@@ -43,7 +43,7 @@ const Navbar = () => {
           <Link to="/register" className="block px-2 py-1 hover:text-blue-500"> Register </Link>
         </div>
       )}
-    </nav>
+    </aside>
   );
 };
 
