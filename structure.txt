@@ -1,0 +1,29 @@
+IOLIB
+-client
+    --node_modules/....
+    --public/vite.svg
+    --src/
+        ---assets/react.svg
+        ---component/
+            ->ui
+            ->AiChat.tsx
+            ->BookFrom.tsx
+            ->TabChanar.tsx
+            ->WebForm.tsx
+        ---data
+            ->form1.ts
+            ->form2.ts
+        ---lib
+            ->tsxUtils.tsx
+            ->utils.ts
+        ---pages
+            ->Chat.tsx
+            ->Form.tsx
+            ->Home.tsx
+            ->Login.tsx
+            ->Register.tsx
+        ---App.tsx
+        ---index.css
+        ---Layout.tsx
+        ---main.tsx
+        ---vite-endv.d.ts
