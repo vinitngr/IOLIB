@@ -1,7 +1,7 @@
 import {  RAGworker, saveToMONGO, StoreRAG } from "../service/add.service";
 import { Request, Response } from "express";
 import pdfParse from "pdf-parse";
-import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RETRIVAL } from "../configs/Constant";
+import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RANGE, DEFAULT_RETRIVAL } from "../configs/Constant";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 
 
@@ -91,8 +91,7 @@ export const addPdfController = async (req: Request, res: Response): Promise<voi
         if (typeof parsedRag === "string") {
             parsedRag = JSON.parse(parsedRag);
         }
-        parsedRag.range = parsedRag.range ?? "1-end"; 
-        
+        parsedRag.range = parsedRag.range ?? DEFAULT_RANGE; 
         
         //save to mongo
         await saveToMONGO({

@@ -20,6 +20,7 @@ export const saveToMONGO = async (data: DocsData ) => {
         await newDocs.save()
         console.log('saved to mongp');
         // TODO: Implement actual MongoDB insertion logic here
+        return newDocs
     } catch (error) {
         throw new Error(`Failed storing data in MongoDB: ${error.message}`);
     };
