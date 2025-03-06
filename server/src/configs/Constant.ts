@@ -2,10 +2,10 @@ export const DEFAULT_RETRIVAL: number = 2
 export const DEFAULT_CHUNK_SIZE: number = 700
 export const DEFAULT_CHUNK_OVERLAP: number = 200
 
-export const DEFAULT_OUTPUT_TOKEN = 300
-export const DEFAULT_TEMP = 0.2
-export const DEFAULT_MODEL = "gemini-2.0-flash"
-export const DEFAULT_RANGE = '1-end'
+export const DEFAULT_OUTPUT_TOKEN : number = 300
+export const DEFAULT_TEMP  : number = 0.4
+export const DEFAULT_MODEL : string = "gemini-2.0-flash"
+export const DEFAULT_RANGE : string = '1-end'
 
 export const SUMMARY_TEMP = 0.2
 export const SUMMARY_TOKEN = 2000
