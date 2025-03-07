@@ -94,7 +94,7 @@ export interface AboutPdf {
       category: string;
       language: string;
       description: string;
-      url: string;
+      url: string; // URL for the image (pdf)
     };
     aboutWeb?: {
       webURL: string;
@@ -109,6 +109,6 @@ export interface AboutPdf {
       chunkOverlap: number;
       strict: boolean;
     };
+    url?: string; 
   }
-  
   

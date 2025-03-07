@@ -12,18 +12,19 @@ export const testController = (_req: any, res: any) => {
 
 export const addwebController = async (req: any, res: any) => {
     try {
-        if(res.locals.user.type !== 'admin') {
-            return res.status(401).json({ message: "Not admin enough to add" });
-        }
-        const parsedData = webSchema.safeParse(req.body);
-        if (!parsedData.success) {
-            return res.status(400).json({
-                message: "Validation Error",
-                errors: parsedData.error.format()
-            });
-        }
-        const addData = parsedData.data;
-
+        // if(res.locals.user.type !== 'admin') {
+        //     return res.status(401).json({ message: "Not admin enough to add" });
+        // }
+        console.log('entered add web');
+        // const parsedData = webSchema.safeParse(req.body);
+        // if (!parsedData.success) {
+        //     return res.status(400).json({
+        //         message: "Validation Error",
+        //         errors: parsedData.error.format()
+        //     });
+        // }
+        // const addData = parsedData.data;
+        const addData = req.body;
         if (!addData.webURL) {
             return res.status(400).json({ error: "webURL is required" });
         }
@@ -92,28 +93,28 @@ export const addwebController = async (req: any, res: any) => {
 
 export const addPdfController = async (req: any, res: any) => {
     try {
-        if(res.locals.user.type !== 'admin') {
-            return res.status(401).json({ message: "Not admin enough to add" });
-        }
-        const parsedData = pdfSchema.safeParse(req.body);
-        if (!parsedData.success) {
-            return res.status(400).json({ 
-                message: "Validation Error", 
-                errors: parsedData.error.format() 
-            });
-        }
-        const { author, category, language, description, rag } = parsedData.data;
+        // if(res.locals.user.type !== 'admin') {
+        //     return res.status(401).json({ message: "Not admin enough to add" });
+        // }
+        // const parsedData = pdfSchema.safeParse(req.body);
+        // if (!parsedData.success) {
+        //     return res.status(400).json({ 
+        //         message: "Validation Error", 
+        //         errors: parsedData.error.format() 
+        //     });
+        // }
+        const { author, category, language, description, rag } = req.body;
         const pdfFile = req.files?.pdf?.[0]; 
         const imageFile = req.files?.image?.[0]; 
-        
+        // console.log(author , category , language , description , rag);
         //==========================================================================================//
         console.log('image storing initialized');
         let imageUrl : string = '';
-        // if(imageFile) {
-        //     console.log('image uploading to cloudinary');
-        //     imageUrl = await uploadImageToCloudinary(imageFile.buffer, "chat-app/chat-img");
-        //     console.log("Uploaded Image URL:", imageUrl);
-        // }
+        if(imageFile) {
+            console.log('image uploading to cloudinary');
+            imageUrl = await uploadImageToCloudinary(imageFile.buffer, "chat-app/chat-img");
+            console.log("Uploaded Image URL:", imageUrl);
+        }
         console.log('image storing completed');
         //==========================================================================================//
 
@@ -132,39 +133,45 @@ export const addPdfController = async (req: any, res: any) => {
             strict?: boolean;
         }
         let parsedRag: RAGData;
-        try {
-            parsedRag = JSON.parse(rag);
-        
-            if (typeof parsedRag === "string") {
-                parsedRag = JSON.parse(parsedRag);
-            }
-        
-            const validation = ragSchema.safeParse(parsedRag);
-            if (!validation.success) {
-                return res.status(400).json({ message: "Invalid rag data", errors: validation.error.format() });
-            }
-        
-            parsedRag = validation.data;
-        } catch (error) {
-            return res.status(400).json({ message: "Invalid stringified JSON format" });
+        parsedRag = JSON.parse(rag);
+    
+        if (typeof parsedRag === "string") {
+            parsedRag = JSON.parse(parsedRag);
         }
+        console.log(parsedRag);
+        // try {
+            // parsedRag = JSON.parse(rag);
+    
+            // if (typeof parsedRag === "string") {
+            //     parsedRag = JSON.parse(parsedRag);
+            // }
+        //     // Commented out the validation part
+        //     // const validation = ragSchema.safeParse(parsedRag);
+        //     // if (!validation.success) {
+        //     //     return res.status(400).json({ message: "Invalid rag data", errors: validation.error.format() });
+        //     // }
+        
+        //     // parsedRag = validation.data;
+        // } catch (error) {
+        //     return res.status(400).json({ message: "Invalid stringified JSON format" });
+        // }
         
         //==========================================================================================//
-        // console.log('mongo db storing');
-        // await saveToMONGO({
-        //     type: 'pdf',
-        //     docsId: randomUUID,
-        //     createdAt: time,
-        //     aboutPdf: {
-        //         author,
-        //         category,
-        //         language,
-        //         description,
-        //         url : imageUrl
-        //     },
-        //     ...(parsedRag && { RAG: parsedRag })
-        // });
-        // console.log('mongo db stored');
+        console.log('mongo db storing');
+        await saveToMONGO({
+            type: 'pdf',
+            docsId: randomUUID,
+            createdAt: time,
+            aboutPdf: {
+                author,
+                category,
+                language,
+                description,
+                url : imageUrl
+            },
+            ...(parsedRag && { RAG: parsedRag })
+        });
+        console.log('mongo db stored');
         //==========================================================================================//
 
         const pdfBuffer = pdfFile.buffer;
