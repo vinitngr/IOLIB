@@ -2,6 +2,7 @@ import express from 'express';
 import { addwebController, testController , addPdfController } from '../controllers/add.controller';
 const router = express.Router();
 import multer from 'multer';
+import { getDocsById } from '../controllers/get.controller';
 
 const upload = multer({ 
     storage: multer.memoryStorage(),
@@ -18,9 +19,6 @@ router.post("/upload", upload.fields([
 
 router.get('/test' , testController )
 router.post('/web' , addwebController )
-// router.post("/upload-pdf", (req, res) => {
-//     upload.single("pdf")(req, res, (err) => {
-//         addPdfController(req, res);
-//     });
-// });
+
+router.get("/docs/:docsId", getDocsById);
 export default router;

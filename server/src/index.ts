@@ -31,6 +31,8 @@ import addRoute from './routes/add.route';
 app.use('/api/add' , addRoute)
 import chatRoute from './routes/chat.route';
 app.use('/api/chat' , chatRoute)
+import getRoute from './routes/get.route';
+app.use('/api/get' , getRoute)
 //xyz router here
 
 

@@ -29,20 +29,20 @@ export const llmHandler = async (req: any, res: any) => {
         const searchResults = await VectorStore.similaritySearchWithScore(query, retrival, filter);
 
         const finalData = searchResults.map(d => d[0].pageContent).join("\n\n");
-        await processLLMStream(query, finalData, strict, temperature, maxOutputTokens, res)
-        // res.json({
-        //     id,
-        //     query,
-        //     type,
-        //     searchResults,
-        //     answer: result.content,
-        //     tokens : {
-        //         inputToken: result.usage_metadata?.input_tokens,
-        //         outoutToken: result.usage_metadata?.output_tokens,
-        //         totalToken : result.usage_metadata?.total_tokens
-        //     },
-        //     finalData
-        // });
+        const result = await processLLMStream(query, finalData, strict, temperature, maxOutputTokens)
+        res.json({
+            id,
+            query,
+            type,
+            searchResults,
+            answer: result.content,
+            tokens : {
+                inputToken: result.usage_metadata?.input_tokens,
+                outoutToken: result.usage_metadata?.output_tokens,
+                totalToken : result.usage_metadata?.total_tokens
+            },
+            finalData
+        });
 
     } catch (error) {
         console.error("Error in llmHandler", error);

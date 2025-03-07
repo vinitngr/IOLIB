@@ -121,9 +121,12 @@ export const addPdfController = async (req: any, res: any) => {
         const { author, category, language, description, rag } = parsedData.data;
         const pdfFile = req.files?.pdf?.[0]; 
         const imageFile = req.files?.image?.[0]; 
-
-        const imageUrl = await uploadImageToCloudinary(imageFile.buffer, "chat-app/chat-img");
-        console.log("Uploaded Image URL:", imageUrl);
+        let imageUrl : string = '';
+        if(imageFile) {
+            console.log('image uploading to cloudinary');
+            imageUrl = await uploadImageToCloudinary(imageFile.buffer, "chat-app/chat-img");
+            console.log("Uploaded Image URL:", imageUrl);
+        }
 
         if (!pdfFile) {
             res.status(400).json({ message: "No PDF file uploaded" });
@@ -182,6 +185,7 @@ export const addPdfController = async (req: any, res: any) => {
                 originalName: pdfFile.originalname,
                 mimeType: pdfFile.mimetype,
                 size: pdfFile.size,
+                url : imageUrl
             },
             mongoSave: true,
             RAGSave: true,
