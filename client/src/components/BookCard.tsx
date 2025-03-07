@@ -30,7 +30,7 @@ export default function BookCard({ title, author, image , details="Lorem ipsum d
     </p>
     
      {/* See Details Button */}
-     <Link to="/testPage"
+     <Link to="/books"
           className="mt-auto self-start px-4 py-2 mb-3 ml-1 relative bg-slate-300 text-blue-800 rounded-md text-sm hover:bg-blue-800 hover:text-slate-300 transition shadow-2xl hover:shadow-xl  "
           
         >
