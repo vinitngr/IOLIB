@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import DocsModel from "../models/Docs";
 
 export const getDocsById = async (req: any , res: any) => {
@@ -17,9 +16,9 @@ export const getDocsById = async (req: any , res: any) => {
     }
 };
 
-export const getAllDocs = async (_req: any, res: any) => {
+export const getAllDocs = async ( _req: any, res: any) => {
     try {
-        const docs = await DocsModel.find({});
+        const docs = await DocsModel.find({}).select('-summary');
         res.status(200).json({docs : docs , length : docs.length});
     } catch (error) {
         console.error("Error fetching documents:", error);

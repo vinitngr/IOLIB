@@ -24,7 +24,6 @@ if(process.env.ENV == 'production'){
     })
 }
 
-//auth router 
 import authRoute from './routes/auth.route';
 app.use('/api/auth' , authRoute)
 import addRoute from './routes/add.route';
@@ -33,7 +32,6 @@ import chatRoute from './routes/chat.route';
 app.use('/api/chat' , chatRoute)
 import getRoute from './routes/get.route';
 app.use('/api/get' , getRoute)
-//xyz router here
 
 
 // server test route
