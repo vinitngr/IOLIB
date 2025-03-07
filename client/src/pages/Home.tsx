@@ -74,6 +74,7 @@ import { BookHome } from "@/types/types";
             return (
               <BookCard
                 key={index} // Using `index` as a unique key, which is a valid approach here
+                title={isPdf ? book.aboutPdf?.title || "Untitled" : book.aboutWeb?.title || "Untitled"}
                 author={bookDetails?.author || "Unknown Author"}
                 image={bookDetails?.url || "default-image-url"} // Use default image if URL is missing
                 details={bookDetails?.description || "No description available"}

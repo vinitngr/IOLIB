@@ -11,7 +11,7 @@ import { useAuthStore } from "./stores/authStore";
 import { Loader } from "lucide-react";
 
 function App() {
-  const [ isloading , setisloading] = useState(true)
+  const [isloading, setisloading] = useState(true)
   const { checkAuth, authUser } = useAuthStore()
 
 
@@ -26,23 +26,23 @@ function App() {
 
   return (
     <>
-    {isloading ?
+      {isloading ?
         <div className="flex items-center justify-center h-screen">
           <Loader className="size-10 animate-spin" />
         </div> :
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="home" element={authUser ? <Home /> : <Navigate to="/login" replace />} />
-          <Route path="form" element={authUser ? <Form /> : <Navigate to="/login" replace />} />
-          <Route path="chat" element={authUser ? <Chat /> : <Navigate to="/login" replace />} />
-          <Route path="testPage" element={authUser ? <TestPage /> : <Navigate to="/login" replace />} />
-        </Route>
-        <Route path="/login" element={!authUser ? <Login /> : <Navigate to="/home" replace />} />
-        <Route path="/register" element={!authUser ? <Register /> : <Navigate to="/home" replace />} />
-        <Route path="*" element={<Navigate to={authUser ? "/home" : "/login"} replace />} />
-      </Routes>
-}
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="home" element={authUser ? <Home /> : <Navigate to="/login" replace />} />
+            <Route path="form" element={authUser ? <Form /> : <Navigate to="/login" replace />} />
+            <Route path="chat" element={authUser ? <Chat /> : <Navigate to="/login" replace />} />
+            <Route path="testPage" element={authUser ? <TestPage /> : <Navigate to="/login" replace />} />
+          </Route>
+          <Route path="/login" element={!authUser ? <Login /> : <Navigate to="/home" replace />} />
+          <Route path="/register" element={!authUser ? <Register /> : <Navigate to="/home" replace />} />
+          <Route path="*" element={<Navigate to={authUser ? "/home" : "/login"} replace />} />
+        </Routes>
+      }
     </>
 
   )
