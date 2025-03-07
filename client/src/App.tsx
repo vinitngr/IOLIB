@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Chat from "./pages/Chat";
 import TestPage from "./components/ui/testPage";
+import BooksPage from "@/pages/ApiPage";
 
 function App() {
   return (
@@ -17,9 +18,12 @@ function App() {
         <Route path='form' element={<Form/>} />
         <Route path='chat' element={<Chat/>} />
         <Route path='testPage' element={<TestPage/>} />
-      </Route> 
         <Route path='/login' element={<Login/>} />
+        <Route path="/books" element={<BooksPage />} />
         <Route path='/register' element={<Register/>} />
+      </Route> 
+        
+        
     </Routes>
     </>
   )
