@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuthStore } from "../stores/auth"; // Import Zustand Store
+import { useAuthStore } from "../stores/authStore"; // Import Zustand Store
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";

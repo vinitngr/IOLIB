@@ -2,11 +2,11 @@ import AiChat from '@/components/AiChat'
 
 function Chat() {
   return (
-    <div className="grid grid-cols-3 gap-10 h-screen overflow-hidden p-5 w-full">
+    <div className="grid w-[90%] grid-cols-3 gap-10 h-screen overflow-hidden p-5">
 
-  <div className="col-span-3 h-full overflow-hidden">
-    <AiChat />
-  </div>
+    <div className="col-span-3 h-full overflow-hidden">
+      <AiChat />
+    </div>
 </div>
 
   )

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { useAuthStore } from "../stores/auth";
+import { useAuthStore } from "../stores/authStore";
 import { useState } from "react";
 
 function Login() {
