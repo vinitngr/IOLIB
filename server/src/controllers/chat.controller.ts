@@ -54,9 +54,7 @@ export const llmHandler = async (req: any, res: any) => {
 export const docsSummary = async (req: any, res: any) => {
     try {
         const { id } = req.params;
-
         const doc = await DocsModel.findOne({ docsId: id }).select("summary");
-
         if (!doc) {
             return res.status(404).json({ message: "Document not found" });
         }
