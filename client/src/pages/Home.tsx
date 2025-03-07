@@ -4,11 +4,16 @@ import BookGrid from "@/components/BookGrid.tsx";
 
 import booksData from "@/data/books.json";
 import NavBar from "@/components/NavBarSideways.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookControls from "@/components/ui/BookControls";
+
+
+import { useTheme } from "@/components/ThemeProvider";
 // import BgColor from "@/components/ui/bgHome.tsx"
 function Home() {
   // const [bgColor, setBgColor] = useState("white");
+
+
 
 
 
@@ -21,6 +26,9 @@ function Home() {
   const languages = Array.from(new Set(booksData.map((book) => book.language)));
   const authors = Array.from(new Set(booksData.map((book) => book.author)));
   const categories = Array.from(new Set(booksData.map((book) => book.category)));
+
+  const {darkMode} = useTheme();
+
 
   const filteredBooks = booksData
     .filter(
@@ -45,7 +53,7 @@ function Home() {
   
   
   return (
-    <div className="grid min-h-max bg-slate-200">
+    <div className={`grid min-h-max  transition-colors ${ darkMode ? "bg-gray-800" : "bg-slate-200"}`}>
       
     {/* Sidebar */}
     <NavBar />

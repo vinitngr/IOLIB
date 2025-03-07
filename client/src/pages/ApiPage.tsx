@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BookGrid from "@/components/BookGrid";
 import booksData from "@/data/books.json";
+import { useTheme } from "@/components/ThemeProvider";
 
 export default function BooksPage() {
   const [geminiApiKey, setGeminiApiKey] = useState("");
@@ -13,13 +14,16 @@ export default function BooksPage() {
     alert("API Keys saved to local storage!");
   };
 
+  const {darkMode} = useTheme();
+  
+  
   return (
     // ✨ CHANGED: Removed min-h-screen, added w-full to cover width, and bg-slate-100 stays as is
-    <div className="flex w-full bg-slate-100">
+    <div className={`flex w-full ${ darkMode ? "bg-gray-800" : "bg-slate-200"}`}>
 
       {/* Sidebar for API Keys */}
       {/* ✨ CHANGED: Adjusted width to w-1/4 and added m-4 for gap */}
-      <div className="w-220  bg-white p-6 rounded-lg shadow-md m-4">
+      <div className={`w-220 ${darkMode ? "bg-gray-900" : "bg-white"}  p-6 rounded-lg shadow-md m-4`}>
         <h2 className="text-lg font-bold mb-4">ADD API KEYS</h2>
 
         <div className="mb-4">
