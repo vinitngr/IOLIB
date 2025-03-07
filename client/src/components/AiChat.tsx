@@ -1,165 +1,165 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Plus, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect, useRef} from "react";
+import { AiOutlineHome, AiOutlineSun, AiOutlineMoon, } from "react-icons/ai";
+import { IoIosSend } from "react-icons/io";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useTheme } from "./ThemeProvider";
+// Define the Message interface
+interface Message {
+  sender: "user" | "ai"; // Ensures only "user" or "ai" can be used
+  text: string; // Stores the chat message
+}
 
-const AiChat = () => {
-  const [messages, setMessages] = useState<Array<{
-    id: string;
-    content: string;
-    sender: 'user' | 'ai';
-    timestamp: Date;
-  }>>([
-    
-  ]);
+
+
+
+const BookLibrary = () => {
+  // const [darkMode, setDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const savedMessages = localStorage.getItem("chatHistory");
+    return savedMessages ? JSON.parse(savedMessages) : [];
+  });
+    const chatContainerRef = useRef<HTMLDivElement | null>(null); 
   
-  const [inputValue, setInputValue] = useState('');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [isTyping, setIsTyping] = useState(false);
+  const [input, setInput] = useState("");
+  const [typing, setTyping] = useState(false);
+  const [search, setSearch] = useState("");
+  const [expanded, setExpanded] = useState(false);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // useEffect(() => {
+  //   document.documentElement.classList.toggle("dark", darkMode);
+  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
+  // }, [darkMode]);
 
   useEffect(() => {
-    scrollToBottom();
+    localStorage.setItem("chatHistory", JSON.stringify(messages));
   }, [messages]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputValue(e.target.value);
-    
-    // Auto-resize textarea
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 180)}px`;
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
     }
-  };
+  }, [messages]);
 
-  const handleSendMessage = () => {
-    if (inputValue.trim() === '') return;
-    
-    const newUserMessage = {
-      id: Date.now().toString(),
-      content: inputValue,
-      sender: 'user' as const,
-      timestamp: new Date(),
-    };
-    
-    setMessages(prev => [...prev, newUserMessage]);
-    setInputValue('');
-    
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-    }
-    
-    setIsTyping(true);
-    
+
+  // const toggleTheme = () => setDarkMode(!darkMode);
+  const {darkMode , toggleDarkMode} = useTheme();
+
+  const sendMessage = () => {
+    if (!input.trim()) return;
+    const userMessage = { sender: "user", text: input };
+    setMessages((prev: Message[]) => [...prev, { sender: "user", text: input }]);
+
+    setInput("");
+    setTyping(true);
+
     setTimeout(() => {
-      setIsTyping(false);
-      const aiResponse = {
-        id: (Date.now() + 1).toString(),
-        content: "This is a simulated response from Claude. In a real implementation, this would be replaced with an actual API lorem*10 call to an AI service.",
-        sender: 'ai' as const,
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, aiResponse]);
+      const aiResponse: Message = { sender: "ai", text: "Welcome to the AI Book Library! How can I help you today? You can ask for a summary, explanation, or specific details about the book." };
+setMessages((prev: Message[]) => [...prev, aiResponse]);
+
+      setTyping(false);
     }, 1500);
   };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
+  
 
   return (
-    <div className="flex flex-col h-full bg-[#f9fafb] font-sans">
-      {/* Header */}
-      <header className="py-3 px-6 border-b border-[#e5e7eb] bg-white flex items-center justify-between sticky top-0 z-10 shadow-sm">
-        <div className="flex items-center">
-          <div className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center mr-3">
-              <span className='text-white'>IO</span>
-            </div>
-          <h1 className="text-lg font-medium text-[#1f2937]">IOlib</h1>
-        </div>
-      </header>
+    <div className={`flex w-full h-screen p-6 relative transition-colors duration-300 ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
       
-     
-      
-      {/* Messages area */}
-      <div className="flex-1 overflow-y-auto sexyscroll px-4 pb-4 pt-2 space-y-6 max-w-3xl mx-auto w-[700px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-        {messages.map((message) => (
-          <div 
-            key={message.id} 
-            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}
-          >
-            <div className={`relative  flex max-w-2xl rounded-2xl py-1 px-6 ${
-              message.sender === 'user' 
-                ? 'bg-[#303030] text-white text-right' 
-                : 'bg-white shadow-md border border-[#e5e7eb] text-left py-3'
-            }`}>
-              {message.sender === 'ai' && (
-                <div className="absolute -left-2 -top-2 w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
-                  <MessageSquare className="w-4 h-4 text-white" />
-                </div>  
-              )}
-              
-              <div className={`text-sm mb-1 font-medium ${message.sender === 'user' ? 'text-[#e0e7ff]' : 'text-[#4f46e5]'}`}>
-              </div>
-              <div className={`whitespace-pre-wrap text-[15px] leading-relaxed ${message.sender === 'user' ? 'text-white' : 'text-[#1f2937]'}`}>
-                {message.content}
-              </div>
-            
-            </div>
-          </div>
-        ))}
-        
-        {isTyping && (
-          <div className="flex justify-start animate-fadeIn">
-            <div className="relative max-w-2xl rounded-2xl p-2 px-6 bg-white shadow-md border border-[#e5e7eb]">
-              <div className="absolute -left-2 -top-2 w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
-                <MessageSquare className="w-4 h-4 text-white" />
-              </div>
-              <div className="text-sm mb-1 font-medium ">IOlib</div>
-             
-            </div>
-          </div>
-        )}
-        
-        <div ref={messagesEndRef} />
-      </div>
-      
-      <div className="sticky bottom-0 bg-[#f9fafb] border-t border-[#e5e7eb] pt-4 pb-6 px-4">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-end rounded-xl border border-[#d1d5db] bg-white shadow-sm focus-within:ring-2  transition-all duration-200">
-            <button className="p-3 text-[#6b7280] transition-colors">
-              <Plus className="w-5 h-5" />
-            </button>
-            
-            <textarea
-              ref={textareaRef}
-              value={inputValue}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              placeholder="Message iolib..."
-              className="flex-1 py-3 px-2 resize-none outline-none rounded-xl text-[#1f2937] text-[15px] placeholder-[#9ca3af] min-h-[44px] max-h-[180px]"
-              rows={1}
-            />
-            
-            <button 
-              onClick={handleSendMessage}
-              disabled={inputValue.trim() === ''}
-              className={`p-3 rounded-r-xl transition-colors`}
-            >
-              <Send className="w-5 h-5" />
-            </button>
-          </div>
-          
+      {/* Home & Theme Toggle */}
+      <Link to="/" className="absolute top-5 right-16 text-2xl text-gray-500 hover:text-gray-700 m-5">
+        <AiOutlineHome />
+      </Link>
 
+
+      <button onClick={toggleDarkMode} className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700 m-5">
+        {darkMode ? <AiOutlineSun /> : <AiOutlineMoon />}
+      </button>
+{/* Left Panel - Book Details */}
+      <div className={`w-1/3 p-6 rounded-xl shadow-md ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+        <div className="flex items-center space-x-4 mb-6">
+          <div className="w-14 h-14 bg-purple-600 text-white flex items-center justify-center text-xl font-bold rounded-lg">
+            AM
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">Advanced Machine Learning</h2>
+            <p className="text-gray-500">Dr. Sarah Chen</p>
+          </div>
+        </div>
+
+        {/* Content Preview */}
+        <div className={`p-4 rounded-lg shadow-sm border ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
+          <h3 className="font-semibold mb-2">Chapter 4: Neural Networks</h3>
+          <p className="text-sm h-40 overflow-auto">
+  The fundamental building block of a neural network is the neuron, also called a node or unit. 
+  Each neuron receives input from some other nodes, or from an external source, and computes 
+  an output. Each input has an associated weight (w), which is assigned on the basis of its 
+  relative importance to other inputs.
+  
+  The node applies an activation function to the weighted sum of its inputs as follows:
+  y = f(∑(w_i * x_i) + b)
+  
+  Where:
+  - y is the output
+  - f is the activation function
+  - w_i is the weight of input x_i
+  - b is the bias term`,
+  
+          </p>
+        </div>
+
+        {/* Book Details */}
+        <div className={`mt-6 p-4 rounded-lg shadow-sm border ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
+          <h3 className="font-semibold mb-2">Book Details</h3>
+          <p className="text-sm"><strong>Book ID:</strong> BK-2023-0142</p>
+          <p className="text-sm"><strong>Date Added:</strong> 2023-09-15</p>
+        </div>
+      </div>
+
+      {/* Right Panel - AI Assistant */}
+      <div className={`w-2/3 p-6 ml-6 rounded-xl shadow-md flex flex-col ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+        <h2 className="text-lg font-semibold">AI Assistant</h2>
+        <p className="mb-4">Ask about the book, and I'll assist you!</p>
+
+        <div 
+  ref={chatContainerRef}  
+  className="flex-grow p-4 rounded-lg shadow-sm border overflow-auto"
+>
+  {messages.map((msg: Message, index: number) => (
+    <motion.div 
+      key={index} 
+      initial={{ opacity: 0, x: msg.sender === "user" ? 50 : -50 }} 
+      animate={{ opacity: 1, x: 0 }} 
+      className={`p-2 my-1 rounded-lg w-fit max-w-xl ${
+        msg.sender === "user" ? "ml-auto bg-blue-500 text-white" : "mr-auto bg-gray-300 text-gray-900"
+      }`}
+    >
+      {msg.text}
+    </motion.div>
+  ))}
+  {typing && <p className="text-sm text-gray-400">AI is typing...</p>}
+</div>
+
+
+
+        {/* Input Field */}
+        <div className="mt-4 flex items-center border border-gray-300 rounded-lg p-2">
+          <input 
+            type="text" 
+            placeholder="Ask about the book..." 
+            className="w-full outline-none bg-transparent px-2 placeholder:text-gray-400 text-white-900"
+            value={input} 
+            onChange={(e) => setInput(e.target.value)}
+          />
+          <button onClick={sendMessage} className="bg-purple-500 hover:bg-purple-700 text-white px-6 py-4 rounded-lg ">
+          <IoIosSend className="text-2xl" />
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default AiChat;
+export default BookLibrary;
