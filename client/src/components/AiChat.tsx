@@ -3,6 +3,7 @@ import { AiOutlineHome, AiOutlineSun, AiOutlineMoon, } from "react-icons/ai";
 import { IoIosSend } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTheme } from "./ThemeProvider";
 // Define the Message interface
 interface Message {
   sender: "user" | "ai"; // Ensures only "user" or "ai" can be used
@@ -13,7 +14,7 @@ interface Message {
 
 
 const BookLibrary = () => {
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
+  // const [darkMode, setDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
   const [messages, setMessages] = useState<Message[]>(() => {
     const savedMessages = localStorage.getItem("chatHistory");
     return savedMessages ? JSON.parse(savedMessages) : [];
@@ -25,10 +26,10 @@ const BookLibrary = () => {
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState(false);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
+  // useEffect(() => {
+  //   document.documentElement.classList.toggle("dark", darkMode);
+  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
+  // }, [darkMode]);
 
   useEffect(() => {
     localStorage.setItem("chatHistory", JSON.stringify(messages));
@@ -44,7 +45,8 @@ const BookLibrary = () => {
   }, [messages]);
 
 
-  const toggleTheme = () => setDarkMode(!darkMode);
+  // const toggleTheme = () => setDarkMode(!darkMode);
+  const {darkMode , toggleDarkMode} = useTheme();
 
   const sendMessage = () => {
     if (!input.trim()) return;
@@ -70,7 +72,9 @@ setMessages((prev: Message[]) => [...prev, aiResponse]);
       <Link to="/" className="absolute top-5 right-16 text-2xl text-gray-500 hover:text-gray-700 m-5">
         <AiOutlineHome />
       </Link>
-      <button onClick={toggleTheme} className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700 m-5">
+
+
+      <button onClick={toggleDarkMode} className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700 m-5">
         {darkMode ? <AiOutlineSun /> : <AiOutlineMoon />}
       </button>
 {/* Left Panel - Book Details */}
