@@ -25,11 +25,12 @@ export const llmHandler = async (req: any, res: any) => {
 
         const Required_RAG = await checkIfRAGRequired(query);
         console.log(Required_RAG);
-
+        
         let finalData = "";
         let searchResults = [];
 
         if (Required_RAG.required || strict) {
+            console.log("Checkpoint 5: RAG required or strict mode");
             const filter = `batchID = '${id}' AND type = '${type}'`;
             const embedding = createEmbeddings('vinit');
             const VectorStore = createVectorStore(embedding);

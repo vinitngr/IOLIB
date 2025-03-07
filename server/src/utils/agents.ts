@@ -7,14 +7,13 @@ const llmSchema = z.object({
 });
 
 export const checkIfRAGRequired = async (query: string) => {
-    const agentPrompt = `Determine if the query requires Retrieval-Augmented Generation (RAG).  
-                     Use RAG only for database-specific queries, not general knowledge.  
-                     Respond as { required: boolean, answer?: string }.  
-                     If RAG isn't needed, provide the answer.  
-                     Query: ${query}`;
+  const agentPrompt = `Determine if the query requires Retrieval-Augmented Generation (RAG).  
+  Return { required: false, answer: "Hi" } for very general or widely known questions (e.g., greetings, country locations, leaders).  
+  Otherwise, return { required: true }.  
+  Query: ${query}`;
 
 
-    const structuredLLM = createllm(undefined, 0, 30).withStructuredOutput(llmSchema);
+    const structuredLLM = createllm().withStructuredOutput(llmSchema);
     const result = await structuredLLM.invoke(agentPrompt);
 
     return { required: result.required, answer: result.answer ?? null };
