@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { createEmbeddings, createllm, createVectorStore } from "../configs/langchain";
-import { DEFAULT_OUTPUT_TOKEN, DEFAULT_RETRIVAL, DEFAULT_TEMP, SYSTEM_PROMPT_FLEXIBLE, SYSTEM_PROMPT_STRICT } from "../configs/Constant";
+import { createEmbeddings,  createVectorStore } from "../configs/langchain";
+import { DEFAULT_OUTPUT_TOKEN, DEFAULT_RETRIVAL, DEFAULT_TEMP } from "../configs/Constant";
 import DocsModel from "../models/Docs";
 import { processLLMStream } from "../service/chat.service";
+import { checkIfRAGRequired } from "../utils/agents";
 
 export const chatTest = (req: Request, res: Response) => {
     res.send("Chat test route is working");
@@ -22,27 +23,37 @@ export const llmHandler = async (req: any, res: any) => {
             return res.status(400).json({ message: "Query and type are required" });
         }
 
-        const filter = `batchID = '${id}' AND type = '${type}'`;
+        const Required_RAG = await checkIfRAGRequired(query);
+        console.log(Required_RAG);
+        
+        let finalData = "";
+        let searchResults = [];
 
-        const embedding = createEmbeddings('vinit');
-        const VectorStore = createVectorStore(embedding);
-        const searchResults = await VectorStore.similaritySearchWithScore(query, retrival, filter);
+        if (Required_RAG.required || strict) {
+            console.log("Checkpoint 5: RAG required or strict mode");
+            const filter = `batchID = '${id}' AND type = '${type}'`;
+            const embedding = createEmbeddings('vinit');
+            const VectorStore = createVectorStore(embedding);
+            searchResults = await VectorStore.similaritySearchWithScore(query, retrival, filter);
+            finalData = searchResults.map(d => d[0].pageContent).join("\n\n");
+        }
 
-        const finalData = searchResults.map(d => d[0].pageContent).join("\n\n");
-        await processLLMStream(query, finalData, strict, temperature, maxOutputTokens, res)
-        // res.json({
-        //     id,
-        //     query,
-        //     type,
-        //     searchResults,
-        //     answer: result.content,
-        //     tokens : {
-        //         inputToken: result.usage_metadata?.input_tokens,
-        //         outoutToken: result.usage_metadata?.output_tokens,
-        //         totalToken : result.usage_metadata?.total_tokens
-        //     },
-        //     finalData
-        // });
+        const result = await processLLMStream(query, finalData, strict, temperature, maxOutputTokens);
+
+        res.json({
+            id,
+            query,
+            type,
+            searchResults,
+            RAGFetched: strict ? true : Required_RAG.required,
+            answer: Required_RAG.required ? result.content : Required_RAG.answer,
+            tokens: {
+                inputToken: result.usage_metadata?.input_tokens,
+                outputToken: result.usage_metadata?.output_tokens,
+                totalToken: result.usage_metadata?.total_tokens
+            },
+            finalData
+        });
 
     } catch (error) {
         console.error("Error in llmHandler", error);
@@ -51,12 +62,11 @@ export const llmHandler = async (req: any, res: any) => {
 };
 
 
+
 export const docsSummary = async (req: any, res: any) => {
     try {
         const { id } = req.params;
-
         const doc = await DocsModel.findOne({ docsId: id }).select("summary");
-
         if (!doc) {
             return res.status(404).json({ message: "Document not found" });
         }

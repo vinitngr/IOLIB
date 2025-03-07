@@ -27,6 +27,7 @@ export interface DocsData {
         category?: string;
         language?: string;
         description?: string;
+        url?: string
     };
 
     aboutWeb?: {         

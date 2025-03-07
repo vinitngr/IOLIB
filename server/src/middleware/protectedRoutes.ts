@@ -3,7 +3,7 @@ import User from '../models/User';
 
 export const protectedRoutes = async (req: any, res: any, next: any) => {
     try {
-        const token = req.cookies.cookie || req.headers['authorization']?.split(' ')[1];
+        const token = req.cookies.langchain 
         if (!token) {
           return res.status(401).json({ message: 'Unauthorized, token missing' });
         }
@@ -18,6 +18,8 @@ export const protectedRoutes = async (req: any, res: any, next: any) => {
           return res.status(401).json({ message: 'User not found' });
         }
         res.locals.user = foundUser;
+        console.log("Saved to res.locals:", res.locals.user);
+
         next();
       } catch (error) {
         console.error(error);

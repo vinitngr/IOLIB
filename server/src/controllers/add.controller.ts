@@ -1,20 +1,28 @@
-import {  RAGworker, saveToMONGO, StoreRAG } from "../service/add.service";
-import { Request, Response } from "express";
-import {  DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RANGE, DEFAULT_RETRIVAL } from "../configs/Constant";
+import { RAGworker, saveToMONGO, StoreRAG, uploadImageToCloudinary } from "../service/add.service";
+import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RETRIVAL } from "../configs/Constant";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { summarizer } from "../utils/global";
+import { pdfSchema , ragSchema , webSchema } from "../types/zod.validation";
 
-
-
-export const testController = (req : any , res : any) =>{
+export const testController = (_req: any, res: any) => {
     res.status(200).json({
-        message : "test route check"
+        message: "test route check"
     })
 }
 
 export const addwebController = async (req: any, res: any) => {
     try {
-        const addData = req.body;
+        if(res.locals.user.type !== 'admin') {
+            return res.status(401).json({ message: "Not admin enough to add" });
+        }
+        const parsedData = webSchema.safeParse(req.body);
+        if (!parsedData.success) {
+            return res.status(400).json({
+                message: "Validation Error",
+                errors: parsedData.error.format()
+            });
+        }
+        const addData = parsedData.data;
 
         if (!addData.webURL) {
             return res.status(400).json({ error: "webURL is required" });
@@ -25,7 +33,7 @@ export const addwebController = async (req: any, res: any) => {
         const time: string = new Date().toISOString();
 
         console.log('asked for summary');
-        const summaryResult = await summarizer(addData.webURL , addData.RAG?.strict);
+        const summaryResult = await summarizer(addData.webURL, addData.RAG?.strict);
         const summary = typeof summaryResult === "string" ? summaryResult : JSON.stringify(summaryResult);
         console.log('summary generated');
 
@@ -47,29 +55,27 @@ export const addwebController = async (req: any, res: any) => {
                 chunkOverlap: addData.RAG.chunkOverlap || DEFAULT_CHUNK_OVERLAP,
                 strict: addData.RAG.strict || false
             } : undefined,
-            summary 
+            summary
         });
         console.log('mongo Storing finished');
-        
-        
-        
+
         console.log('Rag process started');
         await RAGworker({
             type: 'web',
             webURL: addData.webURL,
-            docsId : randomUUID ,
+            docsId: randomUUID,
             ...(addData.RAG && { RAG: addData.RAG })
         });
         console.log('Rag process finished');
-        
-        
+
+
         console.log('Response sended');
         res.status(200).json({
-            message : 'Web processed successfully',
+            message: 'Web processed successfully',
             type: 'web',
             webURL: addData.webURL,
-            mongoSave: true ,
-            RAGSave: true ,
+            mongoSave: true,
+            RAGSave: true,
             docsId: randomUUID,
             createAt: time,
         });
@@ -84,12 +90,32 @@ export const addwebController = async (req: any, res: any) => {
 
 };
 
-
-export const addPdfController = async (req: Request, res: Response): Promise<void> => {
+export const addPdfController = async (req: any, res: any) => {
     try {
-        const { author, category, language, description, rag  } = req.body
-        console.log( author , category , language , description , rag);
-        const pdfFile = req.file;
+        if(res.locals.user.type !== 'admin') {
+            return res.status(401).json({ message: "Not admin enough to add" });
+        }
+        const parsedData = pdfSchema.safeParse(req.body);
+        if (!parsedData.success) {
+            return res.status(400).json({ 
+                message: "Validation Error", 
+                errors: parsedData.error.format() 
+            });
+        }
+        const { author, category, language, description, rag } = parsedData.data;
+        const pdfFile = req.files?.pdf?.[0]; 
+        const imageFile = req.files?.image?.[0]; 
+        
+        //==========================================================================================//
+        console.log('image storing initialized');
+        let imageUrl : string = '';
+        // if(imageFile) {
+        //     console.log('image uploading to cloudinary');
+        //     imageUrl = await uploadImageToCloudinary(imageFile.buffer, "chat-app/chat-img");
+        //     console.log("Uploaded Image URL:", imageUrl);
+        // }
+        console.log('image storing completed');
+        //==========================================================================================//
 
         if (!pdfFile) {
             res.status(400).json({ message: "No PDF file uploaded" });
@@ -98,56 +124,85 @@ export const addPdfController = async (req: Request, res: Response): Promise<voi
 
         const randomUUID: string = crypto.randomUUID();
         const time: string = new Date().toISOString();
-
-        let parsedRag = JSON.parse(rag)
-        if (typeof parsedRag === "string") {
-            parsedRag = JSON.parse(parsedRag);
+        interface RAGData {
+            range?: string;
+            retrival?: number;
+            tokenPR?: number;
+            chunkOverlap?: number;
+            strict?: boolean;
         }
-        parsedRag.range = parsedRag.range ?? DEFAULT_RANGE; 
+        let parsedRag: RAGData;
+        try {
+            parsedRag = JSON.parse(rag);
         
-        //save to mongo
-        await saveToMONGO({
-            type: 'pdf',
-            docsId: randomUUID,
-            createdAt: time,
-            aboutPdf: {
-                author,
-                category,
-                language,
-                description
-            },
-            ...(parsedRag && { RAG: parsedRag })
-        });
-        //pdf handler
+            if (typeof parsedRag === "string") {
+                parsedRag = JSON.parse(parsedRag);
+            }
+        
+            const validation = ragSchema.safeParse(parsedRag);
+            if (!validation.success) {
+                return res.status(400).json({ message: "Invalid rag data", errors: validation.error.format() });
+            }
+        
+            parsedRag = validation.data;
+        } catch (error) {
+            return res.status(400).json({ message: "Invalid stringified JSON format" });
+        }
+        
+        //==========================================================================================//
+        // console.log('mongo db storing');
+        // await saveToMONGO({
+        //     type: 'pdf',
+        //     docsId: randomUUID,
+        //     createdAt: time,
+        //     aboutPdf: {
+        //         author,
+        //         category,
+        //         language,
+        //         description,
+        //         url : imageUrl
+        //     },
+        //     ...(parsedRag && { RAG: parsedRag })
+        // });
+        // console.log('mongo db stored');
+        //==========================================================================================//
+
         const pdfBuffer = pdfFile.buffer;
-        const pdfBlob = new Blob([pdfBuffer], { type: req.file.mimetype });
+        const pdfBlob = new Blob([pdfBuffer], { type: pdfFile.mimetype });
         const loader = new PDFLoader(pdfBlob);
 
-        const contents = await loader.load(); 
+        const contents = await loader.load();
         const [start, end] = parsedRag.range.split("-").map((v) => (v === "end" ? Infinity : parseInt(v)));
         const filteredDocs = contents.filter((doc, index) => {
             const pageNumber = index + 1;
             return pageNumber >= start && pageNumber <= end;
         });
         const plainText = filteredDocs.map(doc => doc.pageContent).join("\n");
-        
-        //store to RAG
-        StoreRAG({
-            type :'pdf',
-            docsId : randomUUID ,
-            content : plainText ,
+
+
+        //==========================================================================================//
+        console.log('rag initialized');
+        await StoreRAG({
+            type: 'pdf',
+            docsId: randomUUID,
+            content: plainText,
             ...(parsedRag && { RAG: parsedRag })
         })
-        res.status(200).json({ 
-            message: "PDF processed successfully", 
+        console.log('rag done');
+        //==========================================================================================//
+
+        console.log('response sended');
+        res.status(200).json({
+            message: "PDF processed successfully",
             type: 'pdf',
             pdfDetails: {
                 originalName: pdfFile.originalname,
                 mimeType: pdfFile.mimetype,
                 size: pdfFile.size,
+                url : imageUrl
             },
-            mongoSave: true ,
-            RAGSave: true ,
+            mongoSave: true,
+            RAGSave: true,
             docsId: randomUUID,
             createAt: time,
         });

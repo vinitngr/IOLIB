@@ -5,6 +5,7 @@ import { Document } from "langchain/document"
 import { processContentFXN } from "../utils/RAG"
 import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE } from "../configs/Constant"
 import DocsModel from "../models/Docs"
+import cloudinary from "../configs/cloudinary"
 
 export const Crawling = async (URL : string)  =>{
     const content = await tvly.extract([URL] , {})
@@ -52,13 +53,21 @@ export const StoreRAG = async (data: RAGconfig & { content : string }) => {
     const ids = allSplits.map(( _ ,index) => `doc-${data.docsId}-${index}`);
     const embedding = createEmbeddings('data.webURL')
     const vectorStore = createVectorStore(embedding)
-    console.log(documentsWithBatch);
+    // console.log(documentsWithBatch);
     console.log('vector storage initialized');
-    //TODO open vector after 
     await vectorStore.addDocuments(documentsWithBatch, { ids });
     console.log('stored to vector storage');
 }
 
-export const pdfStored = async (data : RAGconfig & {content : string }) => {
+// export const pdfStored = async (data : RAGconfig & {content : string }) => {
     
-}
+// }
+
+
+export const uploadImageToCloudinary = async (imageBuffer: Buffer, folder: string) => {
+    const result = await cloudinary.uploader.upload(`data:image/png;base64,${imageBuffer.toString("base64")}`, {
+      folder,
+      use_filename: true,
+    });
+    return result.secure_url;
+  };
