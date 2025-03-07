@@ -29,7 +29,6 @@ export const addwebController = async (req: any, res: any) => {
             return res.status(400).json({ error: "webURL is required" });
         }
 
-
         const randomUUID: string = crypto.randomUUID();
         const time: string = new Date().toISOString();
 
@@ -37,7 +36,7 @@ export const addwebController = async (req: any, res: any) => {
         const summaryResult = await summarizer(addData.webURL, addData.RAG?.strict);
         const summary = typeof summaryResult === "string" ? summaryResult : JSON.stringify(summaryResult);
         console.log('summary generated');
-
+// console.log(addData.RAG?.strict , addData.RAG?.retrieval , addData.RAG?.tokenPR , addData.RAG?.chunkOverlap);
         console.log('mongo storing started');
         await saveToMONGO({
             type: 'web',
@@ -121,7 +120,7 @@ export const addPdfController = async (req: any, res: any) => {
         if (!pdfFile) {
             res.status(400).json({ message: "No PDF file uploaded" });
             return;
-        }
+        } 
 
         const randomUUID: string = crypto.randomUUID();
         const time: string = new Date().toISOString();

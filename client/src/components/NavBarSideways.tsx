@@ -1,26 +1,18 @@
 import { Link } from "react-router-dom";
 
-import { Home, MessageCircle, FormInput, LogIn, UserPlus, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { AiOutlineMoon, AiOutlineSun } from "react-icons/ai";
-import { useTheme } from "./ThemeProvider";
+import { Home, MessageCircle, FormInput, LogIn, UserPlus} from "lucide-react";
 
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  // const [darkMode, setDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
-
-  const {darkMode, toggleDarkMode} = useTheme();
 
    
 
   return (
-    <aside className={`fixed top-0 left-0 h-full w-16  transition-colors ${ darkMode ? "bg-gray-900 text-slate-200" :  "bg-white/90 text-slate-900"} flex flex-col items-center py-6 shadow-[0_0px_15px_rgba(0,0,0,0.50)] z-50`}>
+    <aside className="fixed top-0 left-0 h-full w-16  transition-colors bg-white/90 text-slate-900 flex flex-col items-center py-6 shadow-[0_0px_15px_rgba(0,0,0,0.50)] z-50">
       
       {/* Logo at the top */}
       <div className="mt-20 mb-10">
-        <Link to="/" className={`text-3xl ${darkMode ? "text-white/90" : "text-black"} font-bold`}>
+        <Link to="/" className="text-3xl font-bold">
           IL
         </Link>
       </div>
@@ -46,10 +38,6 @@ const Navbar = () => {
         <Link to="/register" className="hover:text-blue-500  >">
           <UserPlus size={28} />
         </Link>
-
-        <button onClick={toggleDarkMode} className=" text-2xl mt-20 text-gray-500 hover:text-gray-700 ">
-            {darkMode ? <AiOutlineSun /> : <AiOutlineMoon />}
-        </button>
         
       </nav>
     </aside>
@@ -57,3 +45,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

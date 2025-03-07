@@ -92,7 +92,7 @@ const UploadForm = () => {
             placeholder="Enter author name"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
-            required
+            // required
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -121,7 +121,7 @@ const UploadForm = () => {
             id="language"
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
-            required
+            // required
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select language</option>
@@ -152,7 +152,7 @@ const UploadForm = () => {
             placeholder="Chunk Overlap"
             value={rag.chunkOverlap}
             onChange={(e) => updateRag("chunkOverlap", Number(e.target.value))}
-            required
+            // required
             min={20}
             max={400}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -166,7 +166,7 @@ const UploadForm = () => {
             placeholder="Token PR"
             value={rag.tokenPR}
             onChange={(e) => updateRag("tokenPR", Number(e.target.value))}
-            required
+            // required
             min={250}
             max={1500}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -178,7 +178,7 @@ const UploadForm = () => {
           <select
             value={rag.retrival}
             onChange={(e) => updateRag("retrival", Number(e.target.value))}
-            required
+            // required
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value={1}>1</option>
@@ -194,7 +194,7 @@ const UploadForm = () => {
             placeholder="Range"
             value={rag.range}
             onChange={(e) => updateRag("range", e.target.value)}
-            required
+            // required
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </label>
@@ -216,7 +216,7 @@ const UploadForm = () => {
             type="file"
             accept="image/*"
             onChange={(e) => e.target.files && setImage(e.target.files[0])}
-            required
+            // required
             className="border border-gray-300 rounded-lg p-2"
           />
         </div>
