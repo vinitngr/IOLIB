@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { AiOutlineSun, AiOutlineMoon, } from "react-icons/ai";
+import { AiOutlineSun, AiOutlineMoon, AiOutlineHome, } from "react-icons/ai";
 import { IoIosSend } from "react-icons/io";
 import { motion } from "framer-motion";
 import { Message } from "@/types/types";
+import { useTheme } from "./ThemeProvider";
+import { Link } from "react-router-dom";
 
 const BookLibrary = () => {
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
+  // const [darkMode, setDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
   const [messages, setMessages] = useState<Message[]>(() => {
     const savedMessages = localStorage.getItem("chatHistory");
     return savedMessages ? JSON.parse(savedMessages) : [];
@@ -15,10 +17,10 @@ const BookLibrary = () => {
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode);
-    localStorage.setItem("theme", darkMode ? "dark" : "light");
-  }, [darkMode]);
+  // useEffect(() => {
+  //   document.documentElement.classList.toggle("dark", darkMode);
+  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
+  // }, [darkMode]);
 
   useEffect(() => {
     localStorage.setItem("chatHistory", JSON.stringify(messages));
@@ -34,7 +36,8 @@ const BookLibrary = () => {
   }, [messages]);
 
 
-  const toggleTheme = () => setDarkMode(!darkMode);
+  // const toggleTheme = () => setDarkMode(!darkMode);
+  const {darkMode , toggleDarkMode} = useTheme();
 
   const sendMessage = () => {
     if (!input.trim()) return;
@@ -56,7 +59,15 @@ const BookLibrary = () => {
     <div className={`flex w-full h-screen p-6 relative transition-colors duration-300 ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
 
 
-      <button onClick={toggleTheme} className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700 m-5">
+      {/* <button onClick={toggleTheme} className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700 m-5"> */}
+      
+      {/* Home & Theme Toggle */}
+      <Link to="/" className="absolute top-5 right-16 text-2xl text-gray-500 hover:text-gray-700 m-5">
+        <AiOutlineHome />
+      </Link>
+
+
+      <button onClick={toggleDarkMode} className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700 m-5">
         {darkMode ? <AiOutlineSun /> : <AiOutlineMoon />}
       </button>
       {/* Left Panel - Book Details */}

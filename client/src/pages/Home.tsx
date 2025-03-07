@@ -48,6 +48,7 @@ function Home() {
               const isPdf = book.type === "pdf";
               const bookDetails : any = isPdf ? book.aboutPdf : book.aboutWeb;
 
+
               return (
                 <CustomCard
                   key={book._id} 

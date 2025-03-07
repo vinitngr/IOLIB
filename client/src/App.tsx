@@ -4,11 +4,12 @@ import Layout from "./Layout";
 import Form from "./pages/Form";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Chat from "./pages/Chat";
+// import Chat from "./pages/Chat";
 import TestPage from "./components/ui/testPage";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "./stores/authStore";
 import { Loader } from "lucide-react";
+import Chat from "./pages/Chat";
 
 function App() {
   const [isloading, setisloading] = useState(true)
