@@ -18,7 +18,6 @@ export const protectedRoutes = async (req: any, res: any, next: any) => {
           return res.status(401).json({ message: 'User not found' });
         }
         res.locals.user = foundUser;
-        console.log("Saved to res.locals:", res.locals.user);
 
         next();
       } catch (error) {

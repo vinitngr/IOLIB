@@ -1,95 +1,95 @@
-// import BookFrom from "@/components/BookFrom.tsx"
-import BookGrid from "@/components/BookGrid.tsx";
-// import ChatBox from "@/components/ChatBox";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect } from "react";
+import { useBookStore } from "@/stores/homeStore";
+import { BookHome } from "@/types/types";
+import { Link } from "react-router-dom";
 
-import booksData from "@/data/books.json";
-import NavBar from "@/components/NavBarSideways.tsx";
-import { useEffect, useState } from "react";
-import BookControls from "@/components/ui/BookControls";
-
-
-import { useTheme } from "@/components/ThemeProvider";
-// import BgColor from "@/components/ui/bgHome.tsx"
-function Home() {
-  // const [bgColor, setBgColor] = useState("white");
-
-
-
-
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOption, setSortOption] = useState("title");
-  const [filterAuthor, setFilterAuthor] = useState("");
-  const [filterCategory, setFilterCategory] = useState("");
-  const [filterLanguage, setFilterLanguage] = useState("");
-  
-  const languages = Array.from(new Set(booksData.map((book) => book.language)));
-  const authors = Array.from(new Set(booksData.map((book) => book.author)));
-  const categories = Array.from(new Set(booksData.map((book) => book.category)));
-
-  const {darkMode} = useTheme();
+const CustomCard = ({
+  type,
+  author,
+  category,
+  language,
+  description,
+  image,
+  docsId
+}: {
+  type: string;
+  author: string;
+  category: string;
+  language: string;
+  description: string;
+  image: string;
+  docsId: string
+}) => {
 
 
-  const filteredBooks = booksData
-    .filter(
-      (book) =>
-        book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        book.author.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .filter((book) =>
-      filterAuthor ? book.author === filterAuthor : true
-    )
-    .filter((book) =>
-      filterCategory ? book.category === filterCategory : true
-    )
-    .filter((book) =>
-      filterLanguage ? book.language === filterLanguage : true
-    )
-    .sort((a, b) => {
-      if (sortOption === "title") return a.title.localeCompare(b.title);
-      if (sortOption === "author") return a.author.localeCompare(b.author);
-      return 0;
-    });
-  
-  
+  // const colors = [
+  //   "#FF9900",
+  //   "#109618",
+  //   "#0074D9",
+  //   "#FF851B",
+  //   'black'
+  // ];
+  // const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
   return (
-    <div className={`grid min-h-max  transition-colors ${ darkMode ? "bg-gray-800" : "bg-slate-200"}`}>
-      
-    {/* Sidebar */}
-    <NavBar />
-
-    {/* Main content */}
-    <div className="flex-1 flex flex-col ml-16">
-      
-      {/* Fixed Controls */}
-      <div className="fixed top-0 left-16 right-0 z-10 shadow-md ">
-        <BookControls
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          sortOption={sortOption}
-          setSortOption={setSortOption}
-          filterAuthor={filterAuthor}
-          setFilterAuthor={setFilterAuthor}
-          authors={authors}
-          filterCategory={filterCategory}
-          setFilterCategory={setFilterCategory}
-          categories={categories}
-          filterLanguage={filterLanguage}
-          setFilterLanguage={setFilterLanguage}
-          languages={languages}
-        />
+    <div
+      className="h-56 border bg-white rounded-lg grid  grid-cols-5 shadow-md p-2 "
+    >
+      { type == 'pdf'  ?
+        <img
+        src={image}
+        alt="Book cover"
+        className=" h-full overflow-hidden border mr-2 object-cover rounded-md col-span-2"
+      /> : <div 
+      // style={{ backgroundColor: randomColor }}
+      className={`h-full overflow-hidden bg-gray-500 mr-2 object-cover col-span-2 rounded-md border text-white p-2`}><span className="block text-3xl font-bold">web</span>{description}</div>
+      }
+      <div className="col-span-3 flex flex-col justify-between">
+        <div>
+          <h3 className="text-lg font-semibold">Author: {author}</h3>
+          <p className="text-sm text-gray-600">Category: {category}</p>
+          <p className="text-sm text-gray-600">Language: {language}</p>
+          <p className="text-sm text-gray-700 mt-2">Description: {description}</p>
+        </div>
+          <Link to={`/chat/${docsId}`} className="bg-gray-500 cursor-pointer flex justify-center items-center text-white rounded-lg px-3">Have Chat</Link>
       </div>
-
-      {/* Scrollable Book Grid */}
-      <div className="mt-24 p-4">
-        <BookGrid books={filteredBooks} />
-      </div>
-
     </div>
-  </div>
-      
-      
+  );
+};
+
+function Home() {
+  const { allBooks, fetchBooks } = useBookStore();
+  useEffect(() => {
+    fetchBooks();
+  }, [fetchBooks]);
+console.log(allBooks);
+  return (
+    <div className="grid min-h-max bg-slate-100">
+      <div className="flex-1 flex flex-col ml-16">
+        <div className="mt-5 p-4">
+          <div className="flex-grow grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 p-4 overflow-y-auto col-span-3 gap-3 px-50 py-15">
+            {[...allBooks].reverse().map((book: BookHome) => {
+              const isPdf = book.type === "pdf";
+              const bookDetails : any = isPdf ? book.aboutPdf : book.aboutWeb;
+              return (
+                <CustomCard
+                  key={book._id}
+                  type={book.type} 
+                  author={bookDetails?.author || "Unknown Author"}
+                  category={bookDetails?.category || "General"}
+                  language={bookDetails?.language || "Not specified"}
+                  description={bookDetails?.description || "No description available"}
+                  image={bookDetails?.url || "default-image-url"}
+                  docsId={book.docsId}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
-export default Home
+export default Home;
