@@ -60,7 +60,7 @@ const UploadForm = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
 
         <div className="flex flex-col">
-          <label htmlFor="name" className="font-semibold text-lg mb-2">Name</label>
+          <label htmlFor="name"  className="text-sm font-semibold text-gray-700">Name</label>
           <input
             id="name"
             type="text"
@@ -73,7 +73,7 @@ const UploadForm = () => {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="pdf" className="font-semibold text-lg mb-2">Upload PDF</label>
+          <label htmlFor="pdf"  className="text-sm font-semibold text-gray-700">Upload PDF</label>
           <input
             id="pdf"
             type="file"
@@ -85,7 +85,7 @@ const UploadForm = () => {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="author" className="font-semibold text-lg mb-2">Author</label>
+          <label htmlFor="author"  className="text-sm font-semibold text-gray-700">Author</label>
           <input
             id="author"
             type="text"
@@ -98,7 +98,7 @@ const UploadForm = () => {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="category" className="font-semibold text-lg mb-2">Category</label>
+          <label htmlFor="category"  className="text-sm font-semibold text-gray-700">Category</label>
           <select
             id="category"
             value={category}
@@ -116,7 +116,7 @@ const UploadForm = () => {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="language" className="font-semibold text-lg mb-2">Language</label>
+          <label htmlFor="language"  className="text-sm font-semibold text-gray-700">Language</label>
           <select
             id="language"
             value={language}
@@ -134,7 +134,7 @@ const UploadForm = () => {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="description" className="font-semibold text-lg mb-2">Description</label>
+          <label htmlFor="description"  className="text-sm font-semibold text-gray-700">Description</label>
           <textarea
             id="description"
             placeholder="Enter a brief description"
@@ -160,7 +160,7 @@ const UploadForm = () => {
         </label>
 
         <label className="flex items-center space-x-2">
-          <span className="text-lg">Token PR</span>
+          <span  className="text-sm font-semibold text-gray-700">Token PR</span>
           <input
             type="number"
             placeholder="Token PR"
@@ -174,7 +174,7 @@ const UploadForm = () => {
         </label>
 
         <label className="flex items-center space-x-2">
-          <span className="text-lg">Retrival</span>
+          <span  className="text-sm font-semibold text-gray-700">Retrival</span>
           <select
             value={rag.retrival}
             onChange={(e) => updateRag("retrival", Number(e.target.value))}
@@ -188,7 +188,7 @@ const UploadForm = () => {
         </label>
 
         <label className="flex items-center space-x-2">
-          <span className="text-lg">Range</span>
+          <span  className="text-sm font-semibold text-gray-700"  >Range</span>
           <input
             type="text"
             placeholder="Range"
@@ -205,12 +205,12 @@ const UploadForm = () => {
             onChange={(e) => updateRag("strict", e.target.checked)}
             className="form-checkbox h-5 w-5 text-blue-500"
           />
-          <span className="text-lg">RAG Strict</span>
+          <span  className="text-sm font-semibold text-gray-700">RAG Strict</span>
         </label>
 
 
         <div className="flex flex-col">
-          <label htmlFor="image" className="font-semibold text-lg mb-2">Upload Image</label>
+          <label htmlFor="image"  className="text-sm font-semibold text-gray-700">Upload Image</label>
           <input
             id="image"
             type="file"

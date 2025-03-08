@@ -158,6 +158,7 @@ function WebForm() {
           <label className="text-sm font-semibold text-gray-700">TokenPR</label>
           <input
             type="number"
+            placeholder='between 500-2000'
             name="tokenPR"
             value={formData.RAG.tokenPR}
             onChange={handleChange}
@@ -173,6 +174,7 @@ function WebForm() {
           <input
             type="number"
             name="chunkOverlap"
+            placeholder='overlapping? 250 Recommended'
             value={formData.RAG.chunkOverlap}
             onChange={handleChange}
             min={10}
