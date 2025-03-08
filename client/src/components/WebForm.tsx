@@ -85,7 +85,6 @@ function WebForm() {
         />
       </div>
 
-      {/* Language Field */}
       <div className="form-group space-y-2 col-span-2">
         <label className="col-span-2 text-sm font-semibold text-gray-700">Language</label>
         <select
@@ -101,7 +100,6 @@ function WebForm() {
         </select>
       </div>
 
-      {/* Category Field */}
       <div className="form-group col-span-2 space-y-2">
         <label className="text-sm font-semibold text-gray-700">Category</label>
         <select

@@ -25,17 +25,17 @@ const BookLibrary = () => {
     docsId: string;
     type: string;
     aboutPdf?: {
-      description: string;
-      url: string | undefined;
-      title: string;
-      author: string;
-      category: string;
+      description?: string;
+      url?: string | undefined;
+      title?: string;
+      author?: string;
+      category?: string;
     };
     RAG?: {
-      retrival: string;
-      tokenPR: string;
-      chunkOverlap: string;
-      strict: string;
+      retrival?: string;
+      tokenPR?: string;
+      chunkOverlap?: string;
+      strict?: string;
     };
   }
   const [selectedChat, setSelectedChat] = useState<ChatData>({
@@ -69,22 +69,19 @@ const BookLibrary = () => {
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    // Add user's message to the chat
     setMessages((prev: Message[]) => [...prev, { sender: "user", text: input }]);
     setInput("");
     setTyping(true);
-
     try {
-      // Send the query to the LLM API
       const response = await axiosInstance.post(`/chat/${docsId}/llm`, {
         type: selectedChat.type,
         query: input,
-        strict: selectedChat.RAG?.strict === "true",
+        strict: selectedChat.RAG?.strict || false,
         retrival: selectedChat.RAG?.retrival || 2,
       });
 
       console.log(response.data);
-      const aiResponse: Message = { sender: "ai", text: response.answer };
+      const aiResponse: Message = { sender: "ai", text: response.data.answer };
       setMessages((prev: Message[]) => [...prev, aiResponse]);
       setChatResponse(response.data);
       console.log(chatResponse);

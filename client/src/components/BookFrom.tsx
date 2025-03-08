@@ -12,7 +12,7 @@ const UploadForm = () => {
   const [rag, setRag] = useState({
     chunkOverlap: 200,
     tokenPR:  700,
-    retrival: 0.2,
+    retrival: 1,
     range: "1-end",
     strict: false,
   });

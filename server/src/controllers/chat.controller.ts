@@ -22,13 +22,15 @@ export const llmHandler = async (req: any, res: any) => {
         if (!query || !type) {
             return res.status(400).json({ message: "Query and type are required" });
         }
-
-        const Required_RAG = await checkIfRAGRequired(query);
-        console.log(Required_RAG);
+        let Required_RAG : { required?: boolean , answer?: string }= { required : true  }
+        if(!strict){
+            const Required_RAG = await checkIfRAGRequired(query);
+            console.log(Required_RAG);
+        }
         
         let finalData = "";
         let searchResults = [];
-
+        
         if (Required_RAG.required || strict) {
             console.log("Checkpoint 5: RAG required or strict mode");
             const filter = `batchID = '${id}' AND type = '${type}'`;
@@ -37,7 +39,7 @@ export const llmHandler = async (req: any, res: any) => {
             searchResults = await VectorStore.similaritySearchWithScore(query, retrival, filter);
             finalData = searchResults.map(d => d[0].pageContent).join("\n\n");
         }
-
+        
         const result = await processLLMStream(query, finalData, strict, temperature, maxOutputTokens);
 
         res.json({
@@ -46,7 +48,7 @@ export const llmHandler = async (req: any, res: any) => {
             type,
             searchResults,
             RAGFetched: strict ? true : Required_RAG.required,
-            answer: Required_RAG.required ? result.content : Required_RAG.answer,
+            answer: Required_RAG.required || strict ? result.content : Required_RAG.answer,
             tokens: {
                 inputToken: result.usage_metadata?.input_tokens,
                 outputToken: result.usage_metadata?.output_tokens,
