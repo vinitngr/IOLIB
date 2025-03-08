@@ -1,30 +1,61 @@
 import { useState, useEffect, useRef } from "react";
-import { AiOutlineSun, AiOutlineMoon, AiOutlineHome, } from "react-icons/ai";
+import { useParams } from "react-router-dom";
+import { AiOutlineSun, AiOutlineMoon } from "react-icons/ai";
 import { IoIosSend } from "react-icons/io";
 import { motion } from "framer-motion";
 import { Message } from "@/types/types";
 import { useTheme } from "./ThemeProvider";
-import { Link } from "react-router-dom";
+import { axiosInstance } from "@/lib/axios";
 
 const BookLibrary = () => {
-  // const [darkMode, setDarkMode] = useState(() => localStorage.getItem("theme") === "dark");
-  const [messages, setMessages] = useState<Message[]>(() => {
-    const savedMessages = localStorage.getItem("chatHistory");
-    return savedMessages ? JSON.parse(savedMessages) : [];
-  });
+  const [messages, setMessages] = useState<Message[]>([]);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
+  const { darkMode, toggleDarkMode } = useTheme();
+  const { docsId } = useParams<{ docsId: string }>();
 
-  // useEffect(() => {
-  //   document.documentElement.classList.toggle("dark", darkMode);
-  //   localStorage.setItem("theme", darkMode ? "dark" : "light");
-  // }, [darkMode]);
+  interface ChatResponse {
+    content: string;
+  }
+  const [chatResponse, setChatResponse] = useState<ChatResponse | null>(null);
+
+  interface ChatData {
+    createdAt: string | number | Date;
+    docsId: string;
+    type: string;
+    aboutPdf?: {
+      description: string;
+      url: string | undefined;
+      title: string;
+      author: string;
+      category: string;
+    };
+    RAG?: {
+      retrival: string;
+      tokenPR: string;
+      chunkOverlap: string;
+      strict: string;
+    };
+  }
+  const [selectedChat, setSelectedChat] = useState<ChatData>({
+    createdAt: new Date().toISOString(),
+    docsId: '',
+    type: '',
+  });
 
   useEffect(() => {
-    localStorage.setItem("chatHistory", JSON.stringify(messages));
-  }, [messages]);
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get(`/get/docs/${docsId}`);
+        setSelectedChat(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [docsId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -35,71 +66,78 @@ const BookLibrary = () => {
     }
   }, [messages]);
 
-
-  // const toggleTheme = () => setDarkMode(!darkMode);
-  const {darkMode , toggleDarkMode} = useTheme();
-
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!input.trim()) return;
-    setMessages((prev: Message[]) => [...prev, { sender: "user", text: input }]);
 
+    // Add user's message to the chat
+    setMessages((prev: Message[]) => [...prev, { sender: "user", text: input }]);
     setInput("");
     setTyping(true);
 
-    setTimeout(() => {
-      const aiResponse: Message = { sender: "ai", text: "Welcome to the AI Book Library! How can I help you today? You can ask for a summary, explanation, or specific details about the book." };
+    try {
+      // Send the query to the LLM API
+      const response = await axiosInstance.post(`/chat/${docsId}/llm`, {
+        type: selectedChat.type,
+        query: input,
+        strict: selectedChat.RAG?.strict === "true",
+        retrival: selectedChat.RAG?.retrival || 2,
+      });
+
+      console.log(response.data);
+      const aiResponse: Message = { sender: "ai", text: response.answer };
       setMessages((prev: Message[]) => [...prev, aiResponse]);
-
+      setChatResponse(response.data);
+      console.log(chatResponse);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      const aiResponse: Message = { sender: "ai", text: "Sorry, something went wrong. Please try again." };
+      setMessages((prev: Message[]) => [...prev, aiResponse]);
+    } finally {
       setTyping(false);
-    }, 1500);
+    }
   };
-
 
   return (
     <div className={`flex w-full h-screen p-6 relative transition-colors duration-300 ${darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"}`}>
-
-
-      {/* <button onClick={toggleTheme} className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700 m-5"> */}
-      
-      {/* Home & Theme Toggle */}
-      <Link to="/" className="absolute top-5 right-16 text-2xl text-gray-500 hover:text-gray-700 m-5">
-        <AiOutlineHome />
-      </Link>
-
-
       <button onClick={toggleDarkMode} className="absolute top-5 right-6 text-2xl text-gray-500 hover:text-gray-700 m-5">
         {darkMode ? <AiOutlineSun /> : <AiOutlineMoon />}
       </button>
-      {/* Left Panel - Book Details */}
+
       <div className={`w-1/3 p-6 flex flex-col  rounded-xl shadow-md ${darkMode ? "bg-gray-800" : "bg-white"}`}>
         <div className="flex items-center space-x-4 mb-6 flex-2">
-          <div className="h-full w-20 bg-purple-600 text-white flex items-center justify-center text-xl font-bold rounded-lg">
-            AM
-          </div>
+          {selectedChat.type === 'pdf' ? (
+            <img className="h-full rounded-lg w-20" src={selectedChat.aboutPdf?.url} alt="AI Book Library" />
+          ) : (
+            <div className="h-full w-20 bg-purple-600 text-white flex items-center justify-center text-xl font-bold rounded-lg">WEB</div>
+          )}
           <div>
-            <h2 className="text-lg font-semibold">Advanced Machine Learning</h2>
-            <p className="text-gray-500">Dr. Sarah Chen</p>
+            {selectedChat.aboutPdf && (
+              <>
+                <h2 className="text-lg font-semibold">{selectedChat.aboutPdf.title}</h2>
+                <p className="text-gray-500">{selectedChat.aboutPdf.author}</p>
+                <p className="text-gray-500 text-xs line-clamp-2">{selectedChat.aboutPdf.description}</p>
+              </>
+            )}
           </div>
         </div>
-
-        {/* Content Preview */}
+        {chatResponse?.content}
         <div className={`p-4 rounded-lg shadow-sm border flex-5 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
-          <h3 className="font-semibold mb-2">Chapter 4: Neural Networks</h3>
           <p className="text-sm h-40 overflow-auto">
-            The fundamental building block of a neural network is the neuron, also called a node or unit.
-            Each neuron receives input from some other nodes, or from an external source, and computes
+            {chatResponse && chatResponse.content}
           </p>
         </div>
 
-        {/* Book Details */}
-        <div className={`mt-6 p-4 rounded-lg shadow-sm border flex-3 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
+        <div className={`mt-6 p-4 rounded-lg shadow-sm border flex-2 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
           <h3 className="font-semibold mb-2">Book Details</h3>
-          <p className="text-sm"><strong>Book ID:</strong> BK-2023-0142</p>
-          <p className="text-sm"><strong>Date Added:</strong> 2023-09-15</p>
+          <p className="text-sm"><strong>Book ID:</strong> {selectedChat.docsId}</p>
+          <p className="text-sm"><strong>Retrieval:</strong> {selectedChat.RAG?.retrival}</p>
+          <p className="text-sm"><strong>Chunk Size:</strong> {selectedChat.RAG?.tokenPR}</p>
+          <p className="text-sm"><strong>Strict:</strong> {selectedChat.RAG?.strict ? 'true' : 'false'}</p>
+          <p className="text-sm"><strong>Date Added:</strong> {new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', day: 'numeric' }).format(new Date(selectedChat.createdAt))}</p>
+          <p className="text-sm"><strong>By:</strong> Vinit Nagar</p>
         </div>
       </div>
 
-      {/* Right Panel - AI Assistant */}
       <div className={`w-2/3 p-6 ml-6 rounded-xl shadow-md flex flex-col ${darkMode ? "bg-gray-800" : "bg-white"}`}>
         <h2 className="text-lg font-semibold">AI Assistant</h2>
         <p className="mb-4">Ask about the book, and I'll assist you!</p>
@@ -122,9 +160,6 @@ const BookLibrary = () => {
           {typing && <p className="text-sm text-gray-400">AI is typing...</p>}
         </div>
 
-
-
-        {/* Input Field */}
         <div className="mt-4 flex items-center border border-gray-300 rounded-lg p-2">
           <input
             type="text"

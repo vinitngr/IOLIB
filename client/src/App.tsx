@@ -36,7 +36,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="home" element={authUser ? <Home /> : <Navigate to="/login" replace />} />
             <Route path="form" element={authUser ? <Form /> : <Navigate to="/login" replace />} />
-            <Route path="chat" element={authUser ? <Chat /> : <Navigate to="/login" replace />} />
+            <Route path="chat/:docsId" element={authUser ? <Chat /> : <Navigate to="/login" replace />} />
             <Route path="testPage" element={authUser ? <TestPage /> : <Navigate to="/login" replace />} />
           </Route>
           <Route path="/login" element={!authUser ? <Login /> : <Navigate to="/home" replace />} />
