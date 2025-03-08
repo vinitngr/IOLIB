@@ -7,12 +7,14 @@ import { Link } from "react-router-dom";
 const CustomCard = ({
   type,
   author,
+  title,
   category,
   language,
   description,
   image,
   docsId
 }: {
+  title: string,
   type: string;
   author: string;
   category: string;
@@ -23,14 +25,14 @@ const CustomCard = ({
 }) => {
 
 
-  // const colors = [
-  //   "#FF9900",
-  //   "#109618",
-//   "#0074D9",
-  //   "#FF851B",
-  //   'black'
-  // ];
-  // const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  const colors = [
+    "#FF9900",
+    "#109618",
+  "#0074D9",
+    "#FF851B",
+    'black'
+  ];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
   return (
     <div
@@ -42,15 +44,16 @@ const CustomCard = ({
         alt="Book cover"
         className=" h-full overflow-hidden border mr-2 object-cover rounded-md col-span-2"
       /> : <div 
-      // style={{ backgroundColor: randomColor }}
+      style={{ backgroundColor: randomColor }}
       className={`h-full overflow-hidden bg-gray-500 mr-2 object-cover col-span-2 rounded-md border text-white p-2`}><span className="block text-3xl font-bold">web</span>{description}</div>
       }
       <div className="col-span-3 flex flex-col justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Author: {author}</h3>
+          <h3 className="text-lg font-semibold">title: {title}</h3>
+          <p className="text-sm text-gray-600">author: {author}</p>
           <p className="text-sm text-gray-600">Category: {category}</p>
           <p className="text-sm text-gray-600">Language: {language}</p>
-          <p className="text-sm text-gray-700 mt-2">Description: {description}</p>
+          <p className="text-sm text-gray-700 mt-2 line-clamp-3">Description: {description}</p>
         </div>
           <Link to={`/chat/${docsId}`} className="bg-gray-500 cursor-pointer flex justify-center items-center text-white rounded-lg px-3">Have Chat</Link>
       </div>
@@ -106,31 +109,14 @@ console.log(allBooks);
               ))}
             </select>
 
-          {/* <input
-            type="text"
-            name="language"
-            value={filter.language}
-            onChange={handleFilterChange}
-            placeholder="Language"
-            className="border p-2 rounded"
-          />
-
-          <input
-            type="text"
-            name="author"
-            value={filter.author}
-            onChange={handleFilterChange}
-            placeholder="Author"
-            className="border p-2 rounded"
-          /> */}
         </div>
 
-        {/* Books Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mx-50 mt-30 gap-3">
           {filteredBooks.reverse().map((book: BookHome) => {
             const bookDetails: any = book.type === 'pdf' ? book.aboutPdf : book.aboutWeb;
             return (
               <CustomCard
+                title={bookDetails.title || 'not set'}
                 key={book._id}
                 type={book.type}
                 author={bookDetails?.author || "Unknown Author"}

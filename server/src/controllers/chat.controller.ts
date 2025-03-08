@@ -22,11 +22,13 @@ export const llmHandler = async (req: any, res: any) => {
         if (!query || !type) {
             return res.status(400).json({ message: "Query and type are required" });
         }
-        let Required_RAG : { required?: boolean , answer?: string }= { required : true  }
-        if(!strict){
-            const Required_RAG = await checkIfRAGRequired(query);
-            console.log(Required_RAG);
-        }
+        //ISSUE - Agent is not working perfect
+        //TODO improve agent prompt and send the descciption together with the agent so it can decide either he have to fetch the information or not
+        // let Required_RAG : { required?: boolean , answer?: string }
+        // if(!strict){
+        const Required_RAG = await checkIfRAGRequired(query);
+        console.log(Required_RAG);
+        // }
         
         let finalData = "";
         let searchResults = [];
@@ -47,7 +49,7 @@ export const llmHandler = async (req: any, res: any) => {
             query,
             type,
             searchResults,
-            RAGFetched: strict ? true : Required_RAG.required,
+            RAGFetched: strict || Required_RAG.required,
             answer: Required_RAG.required || strict ? result.content : Required_RAG.answer,
             tokens: {
                 inputToken: result.usage_metadata?.input_tokens,

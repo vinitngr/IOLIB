@@ -5,18 +5,14 @@ import { useAuthStore } from "../stores/authStore";
 import { useState } from "react";
 
 function Login() {
-  const { login } = useAuthStore(); // Fetch login function from Zustand store
+  const { handleLogin } = useAuthStore(); // Fetch login function from Zustand store
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
-    // Log login credentials instead of sending them to a backend
     console.log("Login button clicked!", { email, password });
-
-    // Call the Zustand login function
-    login(email, password);
+    handleLogin({ email , password})
   };
 
   return (

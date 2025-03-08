@@ -1,7 +1,9 @@
 import { axiosInstance } from '@/lib/axios';
 import { useEffect, useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 function WebForm() {
+
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     webURL: '',
     title: '',
@@ -38,6 +40,7 @@ function WebForm() {
     try {
       const res = await axiosInstance.post('/add/web', formData);
       console.log(res);
+      navigate('/');
       console.log('Form submitted successfully:', formData);
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -46,7 +49,6 @@ function WebForm() {
 
   return (
     <form className="grid grid-cols-4 gap-2 min-w-full p-6 max-w-lg bg-white rounded-lg" onSubmit={handleSubmit}>
-      {/* Web URL Field */}
       <div className="form-group col-span-4 space-y-2">
         <label className="text-sm font-semibold col-span-4 text-gray-700">Website URL</label>
         <input
@@ -60,7 +62,6 @@ function WebForm() {
         />
       </div>
 
-      {/* Title Field */}
       <div className="form-group space-y-2 col-span-4">
         <label className="text-sm font-semibold text-gray-700 col-span-4">Title</label>
         <input
@@ -73,7 +74,6 @@ function WebForm() {
         />
       </div>
 
-      {/* Description Field */}
       <div className="form-group space-y-2 col-span-4">
         <label className="text-sm font-semibold text-gray-700">Description</label>
         <textarea
@@ -117,7 +117,6 @@ function WebForm() {
         </select>
       </div>
 
-      {/* Embedding Model Field */}
       <div className="form-group space-y-2 col-span-4">
         <label className="text-sm font-semibold text-gray-700">Embedding Model</label>
         <select
@@ -133,11 +132,8 @@ function WebForm() {
         </select>
       </div>
 
-      {/* RAG Section */}
       <div className="form-group space-y-2 col-span-4 grid grid-cols-2 gap-2">
-        {/* <h3 className="text-lg font-semibold text-gray-700">RAG Settings</h3> */}
         
-        {/* Retrieval */}
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700 col-span-1">Retrieval Count</label>
           <select
@@ -153,7 +149,6 @@ function WebForm() {
           </select>
         </div>
 
-        {/* TokenPR */}
         <div className="space-y-2 col-span-1">
           <label className="text-sm font-semibold text-gray-700">TokenPR</label>
           <input
@@ -168,7 +163,6 @@ function WebForm() {
           />
         </div>
 
-        {/* Chunk Overlap */}
         <div className="space-y-2 col-span-1">
           <label className="text-sm font-semibold text-gray-700">Chunk Overlap</label>
           <input
@@ -183,7 +177,6 @@ function WebForm() {
           />
         </div>
 
-        {/* Strict */}
         <div className="space-y-2 flex gap-2 col-span-1">
           <label className="text-sm font-semibold text-gray-700">Strict</label>
           <input

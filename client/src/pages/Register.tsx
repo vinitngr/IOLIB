@@ -5,15 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 
 function Register() {
-  const { register } = useAuthStore(); // Get the register function
+  const { handleRegister } = useAuthStore(); // Get the register function
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-  console.log("Register button clicked!");
-  register(name, email, password); // Pass name to Zustand store
-};
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log("Register button clicked!");
+    handleRegister({fullName : name , email, password});
+  };
 
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">

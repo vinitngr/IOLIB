@@ -16,10 +16,11 @@ const BookLibrary = () => {
   const { docsId } = useParams<{ docsId: string }>();
 
   interface ChatResponse {
-    content: string;
+    RAGFetched: boolean;
+    answer : string ;
+    finalData : string ;
   }
   const [chatResponse, setChatResponse] = useState<ChatResponse | null>(null);
-
   interface ChatData {
     createdAt: string | number | Date;
     docsId: string;
@@ -31,6 +32,12 @@ const BookLibrary = () => {
       author?: string;
       category?: string;
     };
+    aboutWeb?: {
+      description?: string;
+      title?: string;
+      category?: string;
+      language?: string;
+    }
     RAG?: {
       retrival?: string;
       tokenPR?: string;
@@ -66,6 +73,15 @@ const BookLibrary = () => {
     }
   }, [messages]);
 
+  const askforSummary = async () => {
+      setMessages((prev: Message[]) => [...prev, { sender: "user", text: 'summary' }]);
+      const response = await axiosInstance.get(`/chat/${docsId}/summary`)
+      const aiResponse: Message = { sender: "ai", text: response.data.summary };
+      setMessages((prev: Message[]) => [...prev, aiResponse]);
+      setChatResponse(response.data);
+      console.log(chatResponse);
+  
+  }
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -80,7 +96,6 @@ const BookLibrary = () => {
         retrival: selectedChat.RAG?.retrival || 2,
       });
 
-      console.log(response.data);
       const aiResponse: Message = { sender: "ai", text: response.data.answer };
       setMessages((prev: Message[]) => [...prev, aiResponse]);
       setChatResponse(response.data);
@@ -117,11 +132,11 @@ const BookLibrary = () => {
             )}
           </div>
         </div>
-        {chatResponse?.content}
-        <div className={`p-4 rounded-lg shadow-sm border flex-5 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
+        <div className={`p-4 relative rounded-lg shadow-sm border flex-5 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
           <p className="text-sm h-40 overflow-auto">
-            {chatResponse && chatResponse.content}
+            {chatResponse && chatResponse.finalData}
           </p>
+          <div className={`absolute  bottom-1 bg-purple-800 px-3 text-xs rounded-full text-white`}> { chatResponse && chatResponse.RAGFetched ? 'Fetched' : 'Not Fetched'} </div>
         </div>
 
         <div className={`mt-6 p-4 rounded-lg shadow-sm border flex-2 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
@@ -137,8 +152,12 @@ const BookLibrary = () => {
 
       <div className={`w-2/3 p-6 ml-6 rounded-xl shadow-md flex flex-col ${darkMode ? "bg-gray-800" : "bg-white"}`}>
         <h2 className="text-lg font-semibold">AI Assistant</h2>
-        <p className="mb-4">Ask about the book, and I'll assist you!</p>
-
+        <div className="flex items-center justify-between">
+          <p className="mb-4">Ask about the book, and I'll assist you!</p>
+          {selectedChat.aboutWeb && <button className="mb-4 cursor-pointer px-2 py-1  border rounded-full"
+          onClick={askforSummary}
+          >Summary</button>}
+        </div>
         <div
           ref={chatContainerRef}
           className="flex-grow p-4 rounded-lg shadow-sm border overflow-auto"
