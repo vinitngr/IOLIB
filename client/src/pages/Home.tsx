@@ -8,7 +8,6 @@ const CustomCard = ({
   type,
   author,
   title,
-  category,
   language,
   description,
   image,
@@ -48,14 +47,14 @@ const CustomCard = ({
       className={`h-full overflow-hidden bg-gray-500 mr-2 object-cover col-span-2 rounded-md border text-white p-2`}><span className="block text-3xl font-bold">web</span>{description}</div>
       }
       <div className="col-span-3 flex flex-col justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">title: {title}</h3>
-          <p className="text-sm text-gray-600">author: {author}</p>
-          <p className="text-sm text-gray-600">Category: {category}</p>
-          <p className="text-sm text-gray-600">Language: {language}</p>
-          <p className="text-sm text-gray-700 mt-2 line-clamp-3">Description: {description}</p>
+        <div className="ml-2">
+          <h3 className="text-sm font-semibold line-clamp-4">title: {title}</h3>
+          <p className="text-xs text-gray-600">author: {author}</p>
+          {/* <p className="text-sm text-gray-600">Category: {category}</p> */}
+          <p className="text-xs text-gray-600">Language: {language}</p>
+          <p className="text-xs text-gray-700 mt-2 line-clamp-3">Description: {description}</p>
         </div>
-          <Link to={`/chat/${docsId}`} className="bg-gray-500 cursor-pointer flex justify-center items-center text-white rounded-lg px-3">Have Chat</Link>
+          <Link to={`/chat/${docsId}`} className="bg-gray-500 ml-2 cursor-pointer flex justify-center items-center text-white rounded-lg px-3">Have Chat</Link>
       </div>
     </div>
   );

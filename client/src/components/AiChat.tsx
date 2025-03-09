@@ -155,7 +155,7 @@ const BookLibrary = () => {
         <h2 className="text-lg font-semibold">AI Assistant</h2>
         <div className="flex items-center justify-between">
           <p className="mb-4">Ask about the book, and I'll assist you!</p>
-          {selectedChat.aboutWeb && <button className="mb-4 cursor-pointer px-2 py-1  border rounded-full"
+          {<button className="mb-4 cursor-pointer px-2 py-1  border rounded-full"
           onClick={askforSummary}
           >Summary</button>}
         </div>

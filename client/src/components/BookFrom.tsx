@@ -107,7 +107,7 @@ const UploadForm = () => {
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select category</option>
-            <option value="News">News</option>
+            <option value="News">Research</option>
             <option value="Blog">Blog</option>
             <option value="Biopic">Biopic</option>
             <option value="Education">Education</option>

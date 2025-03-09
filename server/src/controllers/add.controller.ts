@@ -166,8 +166,9 @@ export const addPdfController = async (req: any, res: any) => {
                 language,
                 description,
                 url : imageUrl,
-                title : name
+                title : name,
             },
+            summary : 'No summary provided',
             ...(parsedRag && { RAG: parsedRag })
         });
         console.log('mongo db stored');
@@ -185,7 +186,15 @@ export const addPdfController = async (req: any, res: any) => {
         });
         const plainText = filteredDocs.map(doc => doc.pageContent).join("\n");
 
-
+        // function extractSummary(text: string, maxTokens: number = 1000): string {
+        //     const words = text.split(/\s+/); // Split by spaces
+        //     if (words.length <= maxTokens) return text;
+        
+        //     const firstPart = words.slice(0, maxTokens / 2).join(" ");
+        //     const lastPart = words.slice(-maxTokens / 2).join(" ");
+        
+        //     return `${firstPart} ... ${lastPart}`;
+        // }
         //==========================================================================================//
         console.log('rag initialized');
         await StoreRAG({
