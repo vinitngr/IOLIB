@@ -17,8 +17,8 @@ export const chatHandler = (req: Request, res: Response) => {
 export const llmHandler = async (req: any, res: any) => {
     try {
         const { id } = req.params;
-        const { query, type, retrival = DEFAULT_RETRIVAL, temperature = DEFAULT_TEMP, maxOutputTokens = DEFAULT_OUTPUT_TOKEN, strict = false } = req.body;
-
+        const { query, type, retrival = DEFAULT_RETRIVAL, temperature = DEFAULT_TEMP, maxOutputTokens = DEFAULT_OUTPUT_TOKEN, strict = false , description = 'No description provided' } = req.body;
+        console.log('discription ' , description);
         if (!query || !type) {
             return res.status(400).json({ message: "Query and type are required" });
         }
@@ -26,7 +26,7 @@ export const llmHandler = async (req: any, res: any) => {
         //TODO improve agent prompt and send the descciption together with the agent so it can decide either he have to fetch the information or not
         // let Required_RAG : { required?: boolean , answer?: string }
         // if(!strict){
-        const Required_RAG = await checkIfRAGRequired(query);
+        const Required_RAG = await checkIfRAGRequired(query , description);
         console.log(Required_RAG);
         // }
         

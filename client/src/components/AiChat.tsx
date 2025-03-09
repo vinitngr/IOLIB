@@ -94,6 +94,7 @@ const BookLibrary = () => {
         query: input,
         strict: selectedChat.RAG?.strict || false,
         retrival: selectedChat.RAG?.retrival || 2,
+        description : selectedChat.aboutPdf?.description || selectedChat.aboutWeb?.description || 'No description provided'
       });
 
       const aiResponse: Message = { sender: "ai", text: response.data.answer };

@@ -6,7 +6,7 @@ const llmSchema = z.object({
   answer: z.string().optional().describe("Direct answer if RAG is not required"),
 });
 
-export const checkIfRAGRequired = async (query: string) => {
+export const checkIfRAGRequired = async (query: string , descciption : string) => {
   const agentPrompt = `Determine if the query requires Retrieval-Augmented Generation (RAG).  
   Return { required: false, answer: { "$Answer yourself here" } } for widely known facts, general knowledge, or common greetings (e.g., "Hello", "What is 2+2?", "Who is the president of the USA?").  
   If the query is ambiguous or lacks context, return { required: false, answer: "Please rephrase your query with more details." }.  

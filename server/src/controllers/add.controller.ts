@@ -31,12 +31,11 @@ export const addwebController = async (req: any, res: any) => {
 
         const randomUUID: string = crypto.randomUUID();
         const time: string = new Date().toISOString();
-
+    
         console.log('asked for summary');
         const summaryResult = await summarizer(addData.webURL, addData.RAG?.strict);
         const summary = typeof summaryResult === "string" ? summaryResult : JSON.stringify(summaryResult);
         console.log('summary generated');
-// console.log(addData.RAG?.strict , addData.RAG?.retrieval , addData.RAG?.tokenPR , addData.RAG?.chunkOverlap);
         console.log('mongo storing started');
         await saveToMONGO({
             type: 'web',
@@ -102,7 +101,7 @@ export const addPdfController = async (req: any, res: any) => {
         //         errors: parsedData.error.format() 
         //     });
         // }
-        const { author, category, language, description, rag } = req.body;
+        const { author, category, language, description, rag , name } = req.body;
         const pdfFile = req.files?.pdf?.[0]; 
         const imageFile = req.files?.image?.[0]; 
         // console.log(author , category , language , description , rag);
@@ -166,7 +165,8 @@ export const addPdfController = async (req: any, res: any) => {
                 category,
                 language,
                 description,
-                url : imageUrl
+                url : imageUrl,
+                title : name
             },
             ...(parsedRag && { RAG: parsedRag })
         });

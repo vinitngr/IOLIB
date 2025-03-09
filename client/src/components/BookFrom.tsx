@@ -109,9 +109,10 @@ const UploadForm = () => {
             <option value="">Select category</option>
             <option value="News">News</option>
             <option value="Blog">Blog</option>
-            <option value="E-commerce">E-commerce</option>
+            <option value="Biopic">Biopic</option>
             <option value="Education">Education</option>
             <option value="Technology">Technology</option>
+            <option value="Other">Other</option>
           </select>
         </div>
 
@@ -126,9 +127,7 @@ const UploadForm = () => {
           >
             <option value="">Select language</option>
             <option value="English">English</option>
-            <option value="Spanish">Spanish</option>
-            <option value="French">French</option>
-            <option value="German">German</option>
+            <option value="Chinese">Hindi</option>
             <option value="Chinese">Chinese</option>
           </select>
         </div>
