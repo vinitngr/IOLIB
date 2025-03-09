@@ -8,10 +8,11 @@ const CustomCard = ({
   type,
   author,
   title,
-  language,
+  // language,
   description,
   image,
-  docsId
+  docsId,
+  category
 }: {
   title: string,
   type: string;
@@ -50,8 +51,8 @@ const CustomCard = ({
         <div className="ml-2">
           <h3 className="text-sm font-semibold line-clamp-4">title: {title}</h3>
           <p className="text-xs text-gray-600">author: {author}</p>
-          {/* <p className="text-sm text-gray-600">Category: {category}</p> */}
-          <p className="text-xs text-gray-600">Language: {language}</p>
+          <p className="text-sm text-gray-600">Category: {category}</p>
+          {/* <p className="text-xs text-gray-600">Language: {language}</p> */}
           <p className="text-xs text-gray-700 mt-2 line-clamp-3">Description: {description}</p>
         </div>
           <Link to={`/chat/${docsId}`} className="bg-gray-500 ml-2 cursor-pointer flex justify-center items-center text-white rounded-lg px-3">Have Chat</Link>

@@ -1,8 +1,9 @@
 import { RAGworker, saveToMONGO, StoreRAG, uploadImageToCloudinary } from "../service/add.service";
-import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_RETRIVAL } from "../configs/Constant";
+import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_MODEL, DEFAULT_RETRIVAL, SUMMARY_TEMP, SUMMARY_TOKEN } from "../configs/Constant";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { summarizer } from "../utils/global";
 import { pdfSchema , ragSchema , webSchema } from "../types/zod.validation";
+import { createllm } from "../configs/langchain";
 
 export const testController = (_req: any, res: any) => {
     res.status(200).json({
@@ -153,7 +154,21 @@ export const addPdfController = async (req: any, res: any) => {
         // } catch (error) {
         //     return res.status(400).json({ message: "Invalid stringified JSON format" });
         // }
-        
+        const pdfBuffer = pdfFile.buffer;
+        const pdfBlob = new Blob([pdfBuffer], { type: pdfFile.mimetype });
+        const loader = new PDFLoader(pdfBlob);
+
+        const contents = await loader.load();
+        const [start, end] = parsedRag.range.split("-").map((v) => (v === "end" ? Infinity : parseInt(v)));
+        const filteredDocs = contents.filter((doc, index) => {
+            const pageNumber = index + 1;
+            return pageNumber >= start && pageNumber <= end;
+        });
+        const plainText = filteredDocs.map(doc => doc.pageContent).join("\n");
+
+        const context= extractSummary(plainText);
+        const summary = await summaryGen(context);
+        // console.log(summary , typeof summary);
         //==========================================================================================//
         console.log('mongo db storing');
         await saveToMONGO({
@@ -168,33 +183,14 @@ export const addPdfController = async (req: any, res: any) => {
                 url : imageUrl,
                 title : name,
             },
-            summary : 'No summary provided',
+            summary : summary ,
             ...(parsedRag && { RAG: parsedRag })
         });
         console.log('mongo db stored');
         //==========================================================================================//
 
-        const pdfBuffer = pdfFile.buffer;
-        const pdfBlob = new Blob([pdfBuffer], { type: pdfFile.mimetype });
-        const loader = new PDFLoader(pdfBlob);
+       
 
-        const contents = await loader.load();
-        const [start, end] = parsedRag.range.split("-").map((v) => (v === "end" ? Infinity : parseInt(v)));
-        const filteredDocs = contents.filter((doc, index) => {
-            const pageNumber = index + 1;
-            return pageNumber >= start && pageNumber <= end;
-        });
-        const plainText = filteredDocs.map(doc => doc.pageContent).join("\n");
-
-        // function extractSummary(text: string, maxTokens: number = 1000): string {
-        //     const words = text.split(/\s+/); // Split by spaces
-        //     if (words.length <= maxTokens) return text;
-        
-        //     const firstPart = words.slice(0, maxTokens / 2).join(" ");
-        //     const lastPart = words.slice(-maxTokens / 2).join(" ");
-        
-        //     return `${firstPart} ... ${lastPart}`;
-        // }
         //==========================================================================================//
         console.log('rag initialized');
         await StoreRAG({
@@ -226,3 +222,33 @@ export const addPdfController = async (req: any, res: any) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+
+
+function extractSummary(text: string, maxTokens: number = 1000): string {
+    const words = text.split(/\s+/); 
+    if (words.length <= maxTokens) return text;
+
+    const firstPart = words.slice(0, maxTokens / 2).join(" ");
+    const lastPart = words.slice(-maxTokens / 2).join(" ");
+
+    return `${firstPart} ... ${lastPart}`;
+}
+
+async function summaryGen(text: string) {
+    const llm = createllm(DEFAULT_MODEL, SUMMARY_TEMP, SUMMARY_TOKEN);
+    const SYSTEM_PROMPT = `
+    You are an advanced summarization AI. Your task is to generate a highly accurate summary based strictly on the given data.  
+    - Do **not** add any external knowledge, assumptions, or interpretations.  
+    - Preserve key details, facts, and names as they appear in the input.  
+    - Ensure clarity and conciseness while maintaining the meaning of the original text.  
+    - Format the summary in a structured way if applicable (e.g., bullet points, headings).  
+    `;
+
+    const response = await llm.invoke([
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: text }
+        ]);
+    //  console.log(response);
+    return String(response.content)
+}
