@@ -17,7 +17,8 @@ const DocsSchema = new Schema<IDocsData>({
         language: String,
         description: String,
         url: String,
-        title: String
+        title: String,
+        pages : Number
     },
     aboutWeb: {
         webURL: String,

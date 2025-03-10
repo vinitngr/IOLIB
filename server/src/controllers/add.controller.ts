@@ -164,6 +164,7 @@ export const addPdfController = async (req: any, res: any) => {
             const pageNumber = index + 1;
             return pageNumber >= start && pageNumber <= end;
         });
+        const pages = filteredDocs.length;
         const plainText = filteredDocs.map(doc => doc.pageContent).join("\n");
 
         const context= extractSummary(plainText);
@@ -182,6 +183,7 @@ export const addPdfController = async (req: any, res: any) => {
                 description,
                 url : imageUrl,
                 title : name,
+                pages : pages
             },
             summary : summary ,
             ...(parsedRag && { RAG: parsedRag })
@@ -238,18 +240,28 @@ function extractSummary(text: string, maxTokens: number = 1000): string {
 async function summaryGen(text: string) {
     const llm = createllm(DEFAULT_MODEL, SUMMARY_TEMP, SUMMARY_TOKEN);
     const SYSTEM_PROMPT = `
-    You are an advanced summarization AI. Your task is to generate a highly accurate summary based strictly on the given data.  
-    - Do **not** add any external knowledge, assumptions, or interpretations. 
-    - use tabular way and represent data in better way if possible  
+    You are an advanced summarization AI. Your task is to generate a highly accurate and detailed summary strictly based on the given data.  
+    - Do **not** add any external knowledge, assumptions, or interpretations.  
+    - Use a **tabular format** if possible, or structured bullet points.  
     - Preserve key details, facts, and names as they appear in the input.  
     - Ensure clarity and conciseness while maintaining the meaning of the original text.  
-    - Format the summary in a structured way if applicable (e.g., bullet points, headings).  
+    - **Avoid stopping midway** and make sure the summary is complete.  
     `;
 
-    const response = await llm.invoke([
+    try {
+        const response = await llm.invoke([
             { role: "system", content: SYSTEM_PROMPT },
             { role: "user", content: text }
         ]);
-    //  console.log(response);
-    return String(response.content)
+        
+        if (response && response.content) {
+            return String(response.content);
+        } else {
+            console.error("Error: No content in response");
+            return "Summary generation failed.";
+        }
+    } catch (error) {
+        console.error("Error while generating summary:", error);
+        return "An error occurred during summary generation.";
+    }
 }

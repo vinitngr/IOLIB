@@ -13,35 +13,36 @@ const Navbar = () => {
     navigate(0)
   }
   return (
-    <aside className="fixed top-0 left-0 h-full w-16  transition-colors bg-white/90 text-slate-900 flex flex-col items-center py-6 shadow-[0_0px_15px_rgba(0,0,0,0.50)] z-50">
-      
-      <div className="mt-20 mb-10" >
+    <aside className="fixed top-32 left-2  bg-white/40 shadow-md text-black backdrop:blur-lg backdrop-blur-md rounded p-2 z-50">
+      <div className="flex flex-col space-y-4 justify-center items-center">
         <Link to="/" className="text-3xl font-bold">
           IL
         </Link>
-      </div>
 
-      <nav className="flex flex-col space-y-8 mt-4"   >
-        <Link to="/home" className="hover:text-blue-500 " title="Go to home">
-          <Home size={28} />
-        </Link>
+        <nav className="flex flex-col space-y-4 mt-4 justify-center items-center"   >
+          <Link to="/home" className="hover:text-blue-500 " title="Go to home">
+            <Home size={24} />
+          </Link>
 
 
-        <Link to="/form" className="hover:text-blue-500" title="Add Dataset">
-         <Plus/>
-        </Link>
+          <Link to="/form" className="hover:text-blue-500" title="Add Dataset">
+           <Plus size={30} />
+          </Link>
 
-        { !authUser && <Link to="/login" className="hover:text-blue-500"  title="Login"  >
-          <LogIn size={28} />
-        </Link>}
-        { authUser && 
-          <div  title='logout' onClick={handlelogout}>
-            <LogOut size={28} />
+          <div className="bg-red-500 rounded p-2 text-white  mt-10">
+            { !authUser && <Link to="/login" className="hover:text-blue-500"  title="Login"  >
+              <LogIn size={20} />
+            </Link>}
+            { authUser && 
+              <div  title='logout' onClick={handlelogout}>
+                <LogOut size={20} />
+              </div>
+            }
           </div>
-        }
-        
-      </nav>
+        </nav>
+      </div>
     </aside>
+    
   );
 };
 

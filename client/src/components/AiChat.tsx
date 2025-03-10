@@ -6,9 +6,8 @@ import { motion } from "framer-motion";
 import { Message } from "@/types/types";
 import { useTheme } from "./ThemeProvider";
 import { axiosInstance } from "@/lib/axios";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import "../App.css"
+import MarkDown from "./MarkDown";
 const BookLibrary = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -119,7 +118,7 @@ const BookLibrary = () => {
       </button>
 
       <div className={`w-1/3 p-6 flex flex-col  rounded-xl shadow-md ${darkMode ? "bg-gray-800" : "bg-white"}`}>
-        <div className="flex items-center space-x-4 mb-6 flex-2">
+        <div className="flex items-center space-x-4 mb-2 flex-2">
           {selectedChat.type === 'pdf' ? (
             <img className="h-full rounded-lg w-20" src={selectedChat.aboutPdf?.url} alt="AI Book Library" />
           ) : (
@@ -136,24 +135,24 @@ const BookLibrary = () => {
           </div>
         </div>
         <div className={`p-4 relative rounded-lg shadow-sm border flex-5 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
-          <p className="text-sm h-40 overflow-auto">
+          <p className="text-sm h-64 overflow-y-auto">
             {chatResponse && chatResponse.finalData}
           </p>
           <div className={`absolute  bottom-1 bg-purple-800 px-3 text-xs rounded-full text-white`}> { chatResponse && chatResponse.RAGFetched ? 'Fetched' : 'Not Fetched'} </div>
         </div>
 
-        <div className={`mt-6 p-4 rounded-lg shadow-sm border flex-2 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
+        <div className={`mt-2 p-4 rounded-lg shadow-sm border grid grid-cols-2 flex-2 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
           <h3 className="font-semibold mb-2">Book Details</h3>
-          <p className="text-sm"><strong>Book ID:</strong> {selectedChat.docsId}</p>
+          <p className="text-sm col-span-2 line-clamp-1"><strong>Book ID:</strong> {selectedChat.docsId}</p>
           <p className="text-sm"><strong>Retrieval:</strong> {selectedChat.RAG?.retrival}</p>
           <p className="text-sm"><strong>Chunk Size:</strong> {selectedChat.RAG?.tokenPR}</p>
           <p className="text-sm"><strong>Strict:</strong> {selectedChat.RAG?.strict ? 'true' : 'false'}</p>
-          <p className="text-sm"><strong>Date Added:</strong> {new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', day: 'numeric' }).format(new Date(selectedChat.createdAt))}</p>
           <p className="text-sm"><strong>By:</strong> Vinit Nagar</p>
+          <p className="text-sm col-span-2"><strong>Date Added:</strong> {new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', day: 'numeric' }).format(new Date(selectedChat.createdAt))}</p>
         </div>
       </div>
 
-      <div className={`w-2/3 p-6 ml-6 rounded-xl shadow-md flex flex-col ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+      <div className={`w-2/3 p-4 ml-6 rounded-xl shadow-md flex flex-col ${darkMode ? "bg-gray-800" : "bg-white"}`}>
         <h2 className="text-lg font-semibold">AI Assistant</h2>
         <div className="flex items-center justify-between">
           <p className="mb-4">Ask about the book, and I'll assist you!</p>
@@ -170,10 +169,10 @@ const BookLibrary = () => {
               key={index}
               initial={{ opacity: 0, x: msg.sender === "user" ? 50 : -50 }}
               animate={{ opacity: 1, x: 0 }}
-              className={`p-2 my-1 rounded-lg w-fit max-w-xl ${msg.sender === "user" ? "ml-auto bg-blue-500 text-white" : "mr-auto bg-gray-300 text-gray-900"
+              className={`p-2 my-1 rounded-lg w-fit max-w-xl ${msg.sender === "user" ? "ml-auto bg-cyan-500 text-white" : "mr-auto bg-gray-100 text-gray-900"
                 }`}
             >
-              <Markdown remarkPlugins={[remarkGfm]}>{msg.text}</Markdown>
+              <MarkDown message={msg.text}/>
             </motion.div>
           ))}
           {typing && <p className="text-sm text-gray-400">AI is typing...</p>}

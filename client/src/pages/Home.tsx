@@ -12,7 +12,8 @@ const CustomCard = ({
   description,
   image,
   docsId,
-  category
+  category,
+  pages
 }: {
   title: string,
   type: string;
@@ -21,7 +22,8 @@ const CustomCard = ({
   language: string;
   description: string;
   image: string;
-  docsId: string
+  docsId: string;
+  pages: number
 }) => {
 
 
@@ -45,18 +47,24 @@ const CustomCard = ({
         className=" h-full overflow-hidden border mr-2 object-cover rounded-md col-span-2"
       /> : <div 
       style={{ backgroundColor: randomColor }}
-      className={`h-full overflow-hidden bg-gray-500 mr-2 object-cover col-span-2 rounded-md border text-white p-2`}><span className="block text-3xl font-bold">web</span>{description}</div>
+      className={`h-full overflow-hidden bg-gray-500 object-cover col-span-2 rounded-md border text-white p-2 `}><span className="block text-3xl font-bold">web</span>{title}</div>
       }
       <div className="col-span-3 flex flex-col justify-between">
         <div className="ml-2">
           <h3 className="text-sm font-semibold line-clamp-4">title: {title}</h3>
-          <p className="text-xs text-gray-600">author: {author}</p>
-          <p className="text-sm text-gray-600">Category: {category}</p>
+          <p className="text-sm text-gray-600">author: {author}</p>
+          <p className="text-xs text-gray-600">Category: {category}</p>
           {/* <p className="text-xs text-gray-600">Language: {language}</p> */}
-          <p className="text-xs text-gray-700 mt-2 line-clamp-3">Description: {description}</p>
+          <p className="text-xs text-gray-700  line-clamp-3">Description: {description}</p>
+          {type === 'pdf' && <p className="text-xs mt-2 text-gray-700 line-clamp-3">Pages: {pages || undefined }</p>}
         </div>
-          <Link to={`/chat/${docsId}`} className="bg-gray-500 ml-2 cursor-pointer flex justify-center items-center text-white rounded-lg px-3">Have Chat</Link>
-      </div>
+          <Link
+            to={`/chat/${docsId}`}
+            className="bg-gray-500 hover:bg-gray-700 ml-2 cursor-pointer flex justify-center items-center text-white rounded-lg px-3 py-1 text-sm font-semibold transition duration-300 ease-in-out"
+          >
+            Have Chat
+          </Link>
+        </div>
     </div>
   );
 };
@@ -89,8 +97,8 @@ function Home() {
   }, [fetchBooks]);
 console.log(allBooks);
   return (
-    <div className="grid min-h-max bg-slate-100">
-    <div className="flex-1 flex flex-col ml-16">
+    <div className="grid min-h-max w-screen bg-slate-100">
+    <div className="flex-1 flex flex-col">
       <div className="mt-0 p-0">
         {/* Filter Bar */}
         <div className="flex gap-4 fixed w-full bg-white  top-0 h-20">
@@ -125,6 +133,7 @@ console.log(allBooks);
                 description={bookDetails?.description || "No description available"}
                 image={bookDetails?.url || "default-image-url"}
                 docsId={book.docsId}
+                pages={bookDetails?.pages}
               />
             );
           })}
