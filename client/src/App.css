@@ -1,0 +1,116 @@
+.chat-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    background-color: #1e1e1e;
+    min-height: 100vh;
+    gap: 2rem;
+}
+
+.chat-bubble {
+    background-color: #252525;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    color: #d4d4d4;
+    width: 100%;
+    margin: 10px;
+}
+
+.chat-bubble h1,
+.chat-bubble h2,
+.chat-bubble h3 {
+    color: #bfbfbf;
+}
+
+/* Code Block Styles (Prism.js) */
+.chat-bubble pre {
+    background: #282c34;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 10px;
+}
+
+/* Specific Code Syntax Colors */
+.chat-bubble .token.comment,
+.chat-bubble .token.prolog,
+.chat-bubble .token.doctype,
+.chat-bubble .token.cdata {
+    color: #6a9955;
+}
+
+.chat-bubble .token.punctuation {
+    color: #d4d4d4;
+}
+
+.chat-bubble .token.property,
+.chat-bubble .token.tag,
+.chat-bubble .token.constant,
+.chat-bubble .token.symbol {
+    color: #569cd6;
+}
+
+.chat-bubble .token.selector,
+.chat-bubble .token.string,
+.chat-bubble .token.char {
+    color: #ce9178;
+}
+
+.chat-bubble .token.keyword {
+    color: #c586c0;
+}
+
+.chat-bubble .token.operator,
+.chat-bubble .token.entity,
+.chat-bubble .token.url {
+    color: #d4d4d4;
+}
+
+.chat-bubble .token.function {
+    color: #dcdcaa;
+}
+
+.chat-bubble .token.variable {
+    color: #9cdcfe;
+}
+
+/* Tables */
+.chat-bubble table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px;
+}
+
+.chat-bubble table th,
+.chat-bubble table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.chat-bubble table th {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Blockquotes */
+.chat-bubble blockquote {
+    border-left: 5px solid #007bff;
+    padding-left: 10px;
+    color: #aaa;
+    font-style: italic;
+    margin: 10px;
+}
+
+/* Links */
+.chat-bubble a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 10px;
+}
+

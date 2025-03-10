@@ -6,7 +6,9 @@ import { motion } from "framer-motion";
 import { Message } from "@/types/types";
 import { useTheme } from "./ThemeProvider";
 import { axiosInstance } from "@/lib/axios";
-
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import "../App.css"
 const BookLibrary = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -171,7 +173,7 @@ const BookLibrary = () => {
               className={`p-2 my-1 rounded-lg w-fit max-w-xl ${msg.sender === "user" ? "ml-auto bg-blue-500 text-white" : "mr-auto bg-gray-300 text-gray-900"
                 }`}
             >
-              {msg.text}
+              <Markdown remarkPlugins={[remarkGfm]}>{msg.text}</Markdown>
             </motion.div>
           ))}
           {typing && <p className="text-sm text-gray-400">AI is typing...</p>}

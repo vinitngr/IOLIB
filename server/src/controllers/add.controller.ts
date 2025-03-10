@@ -239,7 +239,8 @@ async function summaryGen(text: string) {
     const llm = createllm(DEFAULT_MODEL, SUMMARY_TEMP, SUMMARY_TOKEN);
     const SYSTEM_PROMPT = `
     You are an advanced summarization AI. Your task is to generate a highly accurate summary based strictly on the given data.  
-    - Do **not** add any external knowledge, assumptions, or interpretations.  
+    - Do **not** add any external knowledge, assumptions, or interpretations. 
+    - use tabular way and represent data in better way if possible  
     - Preserve key details, facts, and names as they appear in the input.  
     - Ensure clarity and conciseness while maintaining the meaning of the original text.  
     - Format the summary in a structured way if applicable (e.g., bullet points, headings).  

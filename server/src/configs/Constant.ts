@@ -8,7 +8,7 @@ export const DEFAULT_MODEL : string = "gemini-2.0-flash"
 export const DEFAULT_RANGE : string = '1-end'
 
 export const SUMMARY_TEMP = 0.2
-export const SUMMARY_TOKEN = 2000
+export const SUMMARY_TOKEN = 3000
 
 export const SYSTEM_PROMPT_STRICT = `
 - You must provide answers strictly based on the given RAG data.  
