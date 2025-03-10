@@ -83,38 +83,34 @@ export interface AboutPdf {
 
 
 
-  export interface BookHome {
-    _id: string;
-    type: 'pdf' | 'web';
-    docsId: string;
-    createdAt: string;
-    __v: number;
-    aboutPdf?: {
-      author: string;
-      category: string;
-      language: string;
-      description: string;
-      url: string; // URL for the image (pdf)
-    };
-    aboutWeb?: {
-      webURL: string;
-      title: string;
-      category: string;
-      language: string;
-      description: string;
-    };
-    RAG?: {
-      retrival: number;
-      tokenPR: number;
-      chunkOverlap: number;
-      strict: boolean;
-    };
-    url?: string; 
-  }
-  
-
-
-
+export interface BookHome {
+  _id: string;
+  type: 'pdf' | 'web';
+  docsId: string;
+  createdAt: string;
+  __v: number;
+  aboutPdf?: {
+    author: string;
+    category: string;
+    language: string;
+    description: string;
+    url: string; // URL for the image (pdf)
+  };
+  aboutWeb?: {
+    webURL: string;
+    title: string;
+    category: string;
+    language: string;
+    description: string;
+  };
+  RAG?: {
+    retrival: number;
+    tokenPR: number;
+    chunkOverlap: number;
+    strict: boolean;
+  };
+  url?: string; 
+}
 
 
 

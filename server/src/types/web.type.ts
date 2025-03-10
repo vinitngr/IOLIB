@@ -66,3 +66,13 @@ export interface tavilyOut {
     url : string ,
     content : string 
 }
+
+export interface RAGData {
+  range?: string;
+  retrival?: number;
+  tokenPR?: number;
+  chunkOverlap?: number;
+  strict?: boolean;
+}
+
+

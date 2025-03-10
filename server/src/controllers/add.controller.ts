@@ -2,8 +2,8 @@ import { RAGworker, saveToMONGO, StoreRAG, uploadImageToCloudinary } from "../se
 import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_MODEL, DEFAULT_RETRIVAL, SUMMARY_TEMP, SUMMARY_TOKEN } from "../configs/Constant";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { summarizer } from "../utils/global";
-import { pdfSchema , ragSchema , webSchema } from "../types/zod.validation";
 import { createllm } from "../configs/langchain";
+import { RAGData } from "../types/web.type";
 
 export const testController = (_req: any, res: any) => {
     res.status(200).json({
@@ -105,39 +105,30 @@ export const addPdfController = async (req: any, res: any) => {
         const { author, category, language, description, rag , name } = req.body;
         const pdfFile = req.files?.pdf?.[0]; 
         const imageFile = req.files?.image?.[0]; 
-        // console.log(author , category , language , description , rag);
-        //==========================================================================================//
-        console.log('image storing initialized');
-        let imageUrl : string = '';
-        if(imageFile) {
-            console.log('image uploading to cloudinary');
-            imageUrl = await uploadImageToCloudinary(imageFile.buffer, "chat-app/chat-img");
-            console.log("Uploaded Image URL:", imageUrl);
-        }
-        console.log('image storing completed');
-        //==========================================================================================//
 
-        if (!pdfFile) {
-            res.status(400).json({ message: "No PDF file uploaded" });
-            return;
-        } 
+        if (!pdfFile) res.status(400).json({ message: "No PDF file uploaded" });
+        console.log('image storing initialized');
 
         const randomUUID: string = crypto.randomUUID();
         const time: string = new Date().toISOString();
-        interface RAGData {
-            range?: string;
-            retrival?: number;
-            tokenPR?: number;
-            chunkOverlap?: number;
-            strict?: boolean;
+        let imageUrl : string = '';
+        if (imageFile) {
+            try {
+                imageUrl = await uploadImageToCloudinary(imageFile.buffer, "chat-app/chat-img");
+                console.log("Uploaded Image URL:", imageUrl);
+            } catch (err) {
+                console.error("Image Upload Error:", err);
+                return res.status(500).json({ message: "Image upload failed" });
+            }
         }
-        let parsedRag: RAGData;
-        parsedRag = JSON.parse(rag);
-    
-        if (typeof parsedRag === "string") {
-            parsedRag = JSON.parse(parsedRag);
+        console.log('image storing completed');
+
+        let parsedRag : RAGData ;
+        try {
+            parsedRag = JSON.parse(rag);
+        } catch {
+            return res.status(400).json({ message: "Invalid RAG format" });
         }
-        console.log(parsedRag);
         // try {
             // parsedRag = JSON.parse(rag);
     
@@ -160,7 +151,7 @@ export const addPdfController = async (req: any, res: any) => {
 
         const contents = await loader.load();
         const [start, end] = parsedRag.range.split("-").map((v) => (v === "end" ? Infinity : parseInt(v)));
-        const filteredDocs = contents.filter((doc, index) => {
+        const filteredDocs = contents.filter((_doc, index) => {
             const pageNumber = index + 1;
             return pageNumber >= start && pageNumber <= end;
         });
@@ -169,40 +160,32 @@ export const addPdfController = async (req: any, res: any) => {
 
         const context= extractSummary(plainText);
         const summary = await summaryGen(context);
-        // console.log(summary , typeof summary);
-        //==========================================================================================//
-        console.log('mongo db storing');
-        await saveToMONGO({
-            type: 'pdf',
-            docsId: randomUUID,
-            createdAt: time,
-            aboutPdf: {
-                author,
-                category,
-                language,
-                description,
-                url : imageUrl,
-                title : name,
-                pages : pages
-            },
-            summary : summary ,
-            ...(parsedRag && { RAG: parsedRag })
-        });
-        console.log('mongo db stored');
-        //==========================================================================================//
 
-       
 
-        //==========================================================================================//
-        console.log('rag initialized');
-        await StoreRAG({
-            type: 'pdf',
-            docsId: randomUUID,
-            content: plainText,
-            ...(parsedRag && { RAG: parsedRag })
-        })
-        console.log('rag done');
-        //==========================================================================================//
+        await Promise.all([
+            saveToMONGO({
+                type: 'pdf',
+                docsId: randomUUID,
+                createdAt: time,
+                aboutPdf: {
+                    author,
+                    category,
+                    language,
+                    description,
+                    url: imageUrl,
+                    title: name,
+                    pages
+                },
+                summary,
+                ...(parsedRag && { RAG: parsedRag })
+            }),
+            StoreRAG({
+                type: 'pdf',
+                docsId: randomUUID,
+                content: plainText,
+                ...(parsedRag && { RAG: parsedRag })
+            })
+        ]);
 
         console.log('response sended');
         res.status(200).json({
@@ -225,8 +208,6 @@ export const addPdfController = async (req: any, res: any) => {
     }
 };
 
-
-
 function extractSummary(text: string, maxTokens: number = 1000): string {
     const words = text.split(/\s+/); 
     if (words.length <= maxTokens) return text;
@@ -238,7 +219,7 @@ function extractSummary(text: string, maxTokens: number = 1000): string {
 }
 
 async function summaryGen(text: string) {
-    const llm = createllm(DEFAULT_MODEL, SUMMARY_TEMP, SUMMARY_TOKEN);
+    const llm = createllm('gemini-1.5-pro', SUMMARY_TEMP, SUMMARY_TOKEN);
     const SYSTEM_PROMPT = `
     You are an advanced summarization AI. Your task is to generate a highly accurate and detailed summary strictly based on the given data.  
     - Do **not** add any external knowledge, assumptions, or interpretations.  
