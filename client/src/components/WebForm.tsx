@@ -10,7 +10,6 @@ function WebForm() {
     description: '',
     language: '',
     category: '',
-    embeddingModel: '',
     RAG: {
       retrieval: '',
       tokenPR: '',
@@ -117,7 +116,7 @@ function WebForm() {
         </select>
       </div>
 
-      <div className="form-group space-y-2 col-span-4">
+      {/* <div className="form-group space-y-2 col-span-4">
         <label className="text-sm font-semibold text-gray-700">Embedding Model</label>
         <select
           name="embeddingModel"
@@ -130,7 +129,7 @@ function WebForm() {
           <option value="Advanced">Advanced</option>
           <option value="Legacy">Legacy</option>
         </select>
-      </div>
+      </div> */}
 
       <div className="form-group space-y-2 col-span-4 grid grid-cols-2 gap-2">
         

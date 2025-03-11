@@ -1,7 +1,7 @@
 import { RAGworker, saveToMONGO, StoreRAG, uploadImageToCloudinary } from "../service/add.service";
 import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE, DEFAULT_MODEL, DEFAULT_RETRIVAL, SUMMARY_TEMP, SUMMARY_TOKEN } from "../configs/Constant";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
-import { summarizer } from "../utils/global";
+import { callLLM, summarizer } from "../utils/global";
 import { createllm } from "../configs/langchain";
 import { RAGData } from "../types/web.type";
 
@@ -37,6 +37,7 @@ export const addwebController = async (req: any, res: any) => {
         const summaryResult = await summarizer(addData.webURL, addData.RAG?.strict);
         const summary = typeof summaryResult === "string" ? summaryResult : JSON.stringify(summaryResult);
         console.log('summary generated');
+
         console.log('mongo storing started');
         await saveToMONGO({
             type: 'web',
@@ -158,10 +159,8 @@ export const addPdfController = async (req: any, res: any) => {
         const pages = filteredDocs.length;
         const plainText = filteredDocs.map(doc => doc.pageContent).join("\n");
 
-        const context= extractSummary(plainText);
-        const summary = await summaryGen(context);
-
-
+        const context = extractRelevantContent(plainText);
+        const summary = await callLLM(context , false)
         await Promise.all([
             saveToMONGO({
                 type: 'pdf',
@@ -208,41 +207,21 @@ export const addPdfController = async (req: any, res: any) => {
     }
 };
 
-function extractSummary(text: string, maxTokens: number = 1000): string {
-    const words = text.split(/\s+/); 
+function extractRelevantContent(text: string, maxTokens: number = 1000): string {
+    const words = text.split(/\s+/);
     if (words.length <= maxTokens) return text;
 
-    const firstPart = words.slice(0, maxTokens / 2).join(" ");
-    const lastPart = words.slice(-maxTokens / 2).join(" ");
+    // Chunk size based on the number of tokens needed from each chunk
+    const chunkCount = 10;
+    const chunkSize = Math.ceil(words.length / chunkCount);
+    const tokensPerChunk = Math.floor(maxTokens / chunkCount);
 
-    return `${firstPart} ... ${lastPart}`;
-}
-
-async function summaryGen(text: string) {
-    const llm = createllm('gemini-1.5-pro', SUMMARY_TEMP, SUMMARY_TOKEN);
-    const SYSTEM_PROMPT = `
-    You are an advanced summarization AI. Your task is to generate a highly accurate and detailed summary strictly based on the given data.  
-    - Do **not** add any external knowledge, assumptions, or interpretations.  
-    - Use a **tabular format** if possible, or structured bullet points.  
-    - Preserve key details, facts, and names as they appear in the input.  
-    - Ensure clarity and conciseness while maintaining the meaning of the original text.  
-    - **Avoid stopping midway** and make sure the summary is complete.  
-    `;
-
-    try {
-        const response = await llm.invoke([
-            { role: "system", content: SYSTEM_PROMPT },
-            { role: "user", content: text }
-        ]);
-        
-        if (response && response.content) {
-            return String(response.content);
-        } else {
-            console.error("Error: No content in response");
-            return "Summary generation failed.";
-        }
-    } catch (error) {
-        console.error("Error while generating summary:", error);
-        return "An error occurred during summary generation.";
+    const summaryParts: string[] = [];
+    for (let i = 0; i < chunkCount; i++) {
+        const start = i * chunkSize;
+        const end = Math.min(start + tokensPerChunk, words.length);
+        summaryParts.push(words.slice(start, end).join(" "));
     }
+
+    return summaryParts.join(" ... ");
 }

@@ -144,70 +144,7 @@ const UploadForm = () => {
           />
         </div>
 
-        <label className="flex items-center space-x-2">
-          <span className="text-lg">Chunk Overlap</span>
-          <input
-            type="number"
-            placeholder="Chunk Overlap"
-            value={rag.chunkOverlap}
-            onChange={(e) => updateRag("chunkOverlap", Number(e.target.value))}
-            // required
-            min={20}
-            max={400}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-
-        <label className="flex items-center space-x-2">
-          <span  className="text-sm font-semibold text-gray-700">Token PR</span>
-          <input
-            type="number"
-            placeholder="Token PR"
-            value={rag.tokenPR}
-            onChange={(e) => updateRag("tokenPR", Number(e.target.value))}
-            // required
-            min={250}
-            max={1500}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-
-        <label className="flex items-center space-x-2">
-          <span  className="text-sm font-semibold text-gray-700">Retrival</span>
-          <select
-            value={rag.retrival}
-            onChange={(e) => updateRag("retrival", Number(e.target.value))}
-            // required
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
-          </select>
-        </label>
-
-        <label className="flex items-center space-x-2">
-          <span  className="text-sm font-semibold text-gray-700"  >Range</span>
-          <input
-            type="text"
-            placeholder="Range"
-            value={rag.range}
-            onChange={(e) => updateRag("range", e.target.value)}
-            // required
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </label>
-        <label className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            checked={rag.strict}
-            onChange={(e) => updateRag("strict", e.target.checked)}
-            className="form-checkbox h-5 w-5 text-blue-500"
-          />
-          <span  className="text-sm font-semibold text-gray-700">RAG Strict</span>
-        </label>
-
-
+        
         <div className="flex flex-col">
           <label htmlFor="image"  className="text-sm font-semibold text-gray-700">Upload Image</label>
           <input
@@ -219,6 +156,101 @@ const UploadForm = () => {
             className="border border-gray-300 rounded-lg p-2"
           />
         </div>
+        <details className="mt-4">
+          <summary className="flex items-center space-x-2">
+            <button
+              type="button"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-150"
+            >
+              a
+            </button>
+            <span className="text-sm cursor-pointer font-semibold text-gray-700">
+              Advanced Settings
+            </span>
+          </summary>
+          <div className="mt-4">
+            <div className="grid grid-cols-3 gap-3">
+              <label className="flex items-center space-x-2 col-span-1 w-full">
+                <span className="text-sm font-semibold text-gray-700">
+                  Chunk Overlap
+                </span>
+                <input
+                  type="number"
+                  placeholder="Chunk Overlap"
+                  value={rag.chunkOverlap}
+                  onChange={(e) =>
+                    updateRag("chunkOverlap", Number(e.target.value))
+                  }
+                  // required
+                  min={20}
+                  max={400}
+                  className="px-4 py-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </label>
+              <label className="flex items-center space-x-2">
+                <span className="text-sm font-semibold text-gray-700">
+                  Token PR
+                </span>
+                <input
+                  type="number"
+                  placeholder="Token PR"
+                  value={rag.tokenPR}
+                  onChange={(e) =>
+                    updateRag("tokenPR", Number(e.target.value))
+                  }
+                  // required
+                  min={250}
+                  max={1500}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </label>
+              <label className="flex items-center space-x-2">
+                <span className="text-sm font-semibold text-gray-700">
+                  Retrival
+                </span>
+                <select
+                  value={rag.retrival}
+                  onChange={(e) =>
+                    updateRag("retrival", Number(e.target.value))
+                  }
+                  // required
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value={1}>1</option>
+                  <option value={2}>2</option>
+                  <option value={3}>3</option>
+                </select>
+              </label>
+              <label className="flex items-center space-x-2 col-span-1">
+                <span className="text-sm font-semibold text-gray-700">
+                  Range
+                </span>
+                <input
+                  type="text"
+                  placeholder="Range"
+                  value={rag.range}
+                  onChange={(e) => updateRag("range", e.target.value)}
+                  // required
+                  className="px-4 py-2 border w-full border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </label>
+              
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={rag.strict}
+                  onChange={(e) => updateRag("strict", e.target.checked)}
+                  className="form-checkbox h-5 w-5 text-blue-500"
+                />
+                <span className="text-sm font-semibold text-gray-700">
+                  RAG Strict
+                </span>
+              </label>
+            </div>
+          </div>
+        </details>
+
+
 
         <div className="flex justify-center">
           <button

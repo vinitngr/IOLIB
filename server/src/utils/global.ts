@@ -113,20 +113,23 @@ export const callLLM = async (structuredSummary: string, strict: boolean) => {
         - Ensure clarity and conciseness while maintaining the meaning of the original text.  
         - Format the summary in a structured way if applicable (e.g., bullet points, headings).  
         `
-        : `
-        You are an intelligent summarization AI with knowledge enhancement capabilities.  
-        - Your task is to generate a concise and informative summary, primarily based on the given data.  
-        - You may **enhance** the summary by incorporating relevant general knowledge, but within a strict limit of 1000 tokens.  
-        - Keep the summary clear, well-structured, and engaging while ensuring factual accuracy.  
-        - If any data is missing, try to logically complete it using your pre-existing knowledge, but do not assume false information.  
-        `;
+        : 
+         `
+         You ae an advanced summarization AI. Your task is to generate a highly accurate and detailed summary strictly based on the given data.  
+        - Do **not** add any external knowledge, assumptions, or interpretations.  
+        - Use a **tabular format , points and other forms** if possible, or structured bullet points.  
+        - Preserve key details, facts, and names as they appear in the input.  
+        - Ensure clarity and conciseness while maintaining the meaning of the original text.  
+        - **Avoid stopping midway** and make sure the summary is complete.  
+        `
+        ;
 
     const response = await llm.invoke([
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: formatForLLM(structuredSummary) }
     ]);
 
-    return response.content;
+    return String(response.content);
 };
 
 export const summarizer = async (webURL: string , strict : boolean) => {

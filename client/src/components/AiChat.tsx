@@ -20,6 +20,7 @@ const BookLibrary = () => {
     RAGFetched: boolean;
     answer : string ;
     finalData : string ;
+    tokens : { totalToken : number}
   }
   const [chatResponse, setChatResponse] = useState<ChatResponse | null>(null);
   interface ChatData {
@@ -138,7 +139,8 @@ const BookLibrary = () => {
           <p className="text-sm h-64 overflow-y-auto">
             {chatResponse && chatResponse.finalData}
           </p>
-          <div className={`absolute  bottom-1 bg-purple-800 px-3 text-xs rounded-full text-white`}> { chatResponse && chatResponse.RAGFetched ? 'Fetched' : 'Not Fetched'} </div>
+            <div className={`absolute  bottom-1 bg-purple-800 px-3 text-xs rounded-full text-white`}> { chatResponse && chatResponse.RAGFetched ? 'Fetched' : 'Not Fetched'} </div>
+            <div className={`absolute  right-2 bottom-1 bg-yellow-400 px-3 text-xs rounded-full text-white`}>{chatResponse?.tokens?.totalToken ?? ''}</div>
         </div>
 
         <div className={`mt-2 p-4 rounded-lg shadow-sm border grid grid-cols-2 flex-2 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>

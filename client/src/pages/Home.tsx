@@ -51,12 +51,12 @@ const CustomCard = ({
       }
       <div className="col-span-3 flex flex-col justify-between">
         <div className="ml-2">
-          <h3 className="text-sm font-semibold line-clamp-4">title: {title}</h3>
-          <p className="text-sm text-gray-600">author: {author}</p>
-          <p className="text-xs text-gray-600">Category: {category}</p>
-          {/* <p className="text-xs text-gray-600">Language: {language}</p> */}
-          <p className="text-xs text-gray-700  line-clamp-3">Description: {description}</p>
-          {type === 'pdf' && <p className="text-xs mt-2 text-gray-700 line-clamp-3">Pages: {pages || undefined }</p>}
+          <h3 className="text-sm font-semibold line-clamp-4">{title}</h3>
+          <p className="text-xs text-gray-600"><b>Author:</b> {author}</p>
+          <p className="text-xs text-gray-600"><b>Category:</b> {category}</p>
+          {/* <p className="text-xs text-gray-600"><b>Language:</b> {language}</p> */}
+          <p className="text-xs text-gray-700  line-clamp-3"><b>Description:</b> {description}</p>
+          {type === 'pdf' && <p className="text-xs mt-2 text-gray-700 line-clamp-3"><b>Pages:</b> {pages || undefined }</p>}
         </div>
           <Link
             to={`/chat/${docsId}`}

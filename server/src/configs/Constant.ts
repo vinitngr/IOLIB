@@ -20,11 +20,14 @@ export const SYSTEM_PROMPT_STRICT = `
 
 
 export const SYSTEM_PROMPT_FLEXIBLE = `
-- You must use RAG data as the primary source.  
-- If RAG data is missing or insufficient, you may supplement with your knowledge.  
-- You must ensure responses are clear, structured, and concise.  
-- You should stay relevant and avoid unnecessary details.  
-- If the question is outside the given context, you may use general knowledge only if applicable.`;  
+- Use RAG data as the primary source for responses.
+- If RAG data is missing or insufficient, supplement with your own knowledge, clearly stating it as AI-generated.
+- Always attempt to answer the question, even if the RAG data is incomplete.
+- Ensure responses are clear, structured, and concise.
+- Stay relevant and avoid unnecessary details.
+- If the question is outside the given context, use general knowledge only if applicable.
+`;
+
 
 export const SYSTEM_PROMPT_SUMMARY = `
 Generate a concise and structured summary based on the provided content. 
