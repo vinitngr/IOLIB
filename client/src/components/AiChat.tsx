@@ -144,7 +144,7 @@ const BookLibrary = () => {
         </div>
 
         <div className={`mt-2 p-4 rounded-lg shadow-sm border grid grid-cols-2 flex-2 ${darkMode ? "bg-gray-700 border-gray-600" : "bg-gray-50 border-gray-200"}`}>
-          <h3 className="font-semibold mb-2">Book Details</h3>
+          <h3 className="font-semibold mb-2">RAG Details</h3>
           <p className="text-sm col-span-2 line-clamp-1"><strong>Book ID:</strong> {selectedChat.docsId}</p>
           <p className="text-sm"><strong>Retrieval:</strong> {selectedChat.RAG?.retrival}</p>
           <p className="text-sm"><strong>Chunk Size:</strong> {selectedChat.RAG?.tokenPR}</p>
