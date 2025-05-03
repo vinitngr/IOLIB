@@ -119,7 +119,7 @@ console.log(allBooks);
 
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mx-50 mt-30 gap-3">
+        <div className="grid  grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 mx-5 sm:mx-24 mt-30 gap-3">
           {filteredBooks.reverse().map((book: BookHome) => {
             const bookDetails: any = book.type === 'pdf' ? book.aboutPdf : book.aboutWeb;
             return (
